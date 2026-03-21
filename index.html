@@ -1,0 +1,3625 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Πινγκ Πονγκ Βιολογίας - Β΄ Γυμνασίου</title>
+  <link href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root{
+      --bg1:#ff4f87;
+      --bg2:#6b5cff;
+      --bg3:#08c4ff;
+      --ink:#1d2240;
+      --good:#20b45b;
+      --bad:#f25555;
+      --soft:#eef4ff;
+      --shadow:0 8px 24px rgba(0,0,0,0.14);
+      --game-scale:1;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      min-height: 100%;
+      font-family: 'Comfortaa', sans-serif;
+      background:
+        linear-gradient(135deg, rgba(255,79,135,0.18), rgba(107,92,255,0.15), rgba(8,196,255,0.16)),
+        #f7f8ff;
+      color: var(--ink);
+      overflow-x: hidden;
+    }
+
+    body.compact-lock {
+      overflow: hidden;
+    }
+
+    img { max-width: 100%; display: block; }
+
+    .appShell {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* WELCOME (Unchanged as requested) */
+    #welcomeScreen {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      background:
+        radial-gradient(circle at top left, rgba(255,255,255,0.35), transparent 28%),
+        radial-gradient(circle at bottom right, rgba(255,255,255,0.28), transparent 24%),
+        linear-gradient(135deg, var(--bg1), var(--bg2), var(--bg3));
+      color: white;
+      position: relative;
+      overflow: hidden;
+    }
+
+    #welcomeScreen::before,
+    #welcomeScreen::after{
+      content:"";
+      position:absolute;
+      border-radius:50%;
+      background:rgba(255,255,255,0.12);
+      filter: blur(10px);
+      pointer-events:none;
+    }
+
+    #welcomeScreen::before{
+      width: 320px;
+      height: 320px;
+      left: -80px;
+      top: -70px;
+    }
+
+    #welcomeScreen::after{
+      width: 280px;
+      height: 280px;
+      right: -70px;
+      bottom: -60px;
+    }
+
+    .cornerLogo {
+      position: absolute;
+      top: 12px;
+      right: 12px;
+      width: 82px;
+      max-width: 16vw;
+      z-index: 3;
+      filter: drop-shadow(0 4px 12px rgba(0,0,0,0.2));
+    }
+
+    .welcomeInner {
+      width: min(1180px, 100%);
+      margin: 0 auto;
+      padding: 10px 14px 4px;
+      flex: 1;
+      display: grid;
+      grid-template-columns: 0.9fr 1.1fr;
+      align-items: center;
+      gap: 14px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .welcomeLeft {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .heroCard {
+      background: rgba(255,255,255,0.14);
+      border: 1px solid rgba(255,255,255,0.24);
+      border-radius: 22px;
+      backdrop-filter: blur(8px);
+      box-shadow: 0 16px 40px rgba(0,0,0,0.18);
+      padding: 10px;
+      width: min(360px, 100%);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .heroCard img {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      object-fit: cover;
+      border-radius: 16px;
+    }
+
+    .welcomeBall {
+      position: absolute;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff7cf, #ffbd3e 58%, #ff8a00 100%);
+      box-shadow: 0 0 0 8px rgba(255,189,62,0.12), 0 8px 16px rgba(255,138,0,0.35);
+      top: 50%;
+      left: 7%;
+      z-index: 3;
+      animation: pingpongWelcome 2.2s ease-in-out infinite alternate;
+    }
+
+    .welcomeTrail {
+      position: absolute;
+      inset: 0;
+      pointer-events: none;
+      z-index: 2;
+      background:
+        radial-gradient(circle at 18% 42%, rgba(255,255,255,0.18), transparent 7%),
+        radial-gradient(circle at 38% 58%, rgba(255,255,255,0.16), transparent 6%),
+        radial-gradient(circle at 57% 40%, rgba(255,255,255,0.13), transparent 5%),
+        radial-gradient(circle at 77% 60%, rgba(255,255,255,0.11), transparent 5%);
+      animation: trailPulse 2.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes pingpongWelcome {
+      0%   { left: 8%;  transform: translateY(-44px) scale(1); }
+      25%  { left: 30%; transform: translateY(10px) scale(0.96); }
+      50%  { left: 50%; transform: translateY(-16px) scale(1); }
+      75%  { left: 70%; transform: translateY(12px) scale(0.95); }
+      100% { left: 88%; transform: translateY(-38px) scale(1); }
+    }
+
+    @keyframes trailPulse {
+      0% { opacity: 0.55; }
+      100% { opacity: 1; }
+    }
+
+    .welcomeRight {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 8px;
+      padding-right: 4px;
+    }
+
+    .welcomeTitle {
+      margin: 0;
+      font-size: clamp(1.7rem, 3.4vw, 2.8rem);
+      line-height: 1.02;
+      font-weight: 700;
+    }
+
+    .welcomeSubtitle {
+      margin: 0;
+      font-size: clamp(0.92rem, 1.6vw, 1.12rem);
+      line-height: 1.24;
+      opacity: 0.96;
+      font-weight: 600;
+      max-width: 650px;
+    }
+
+    .instructionCard,
+    .avatarCard {
+      background: rgba(255,255,255,0.13);
+      border: 1px solid rgba(255,255,255,0.22);
+      border-radius: 18px;
+      padding: 10px 10px 8px;
+      backdrop-filter: blur(8px);
+    }
+
+    .instructionCard h2,
+    .avatarCard h2 {
+      margin: 0 0 8px;
+      font-size: 0.96rem;
+    }
+
+    .instructionGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 6px 8px;
+    }
+
+    .instructionItem {
+      background: rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 8px 9px;
+      line-height: 1.18;
+      font-size: 0.79rem;
+      font-weight: 600;
+    }
+
+    .avatarGrid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .avatarSelector label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.78rem;
+      font-weight: 700;
+    }
+
+    .avatarSelector select {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 9px 10px;
+      font-family: inherit;
+      font-size: 0.9rem;
+      background: rgba(255,255,255,0.92);
+      color: var(--ink);
+      font-weight: 700;
+      min-height: 40px;
+    }
+
+    .welcomeActions {
+      display: flex;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .ctaBtn {
+      border: none;
+      border-radius: 14px;
+      padding: 11px 18px;
+      font-family: inherit;
+      font-size: 0.96rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.18s ease;
+      box-shadow: 0 10px 22px rgba(0,0,0,0.18);
+    }
+
+    .ctaBtn:hover { transform: translateY(-2px); }
+
+    .ctaPrimary {
+      background: white;
+      color: #c9184a;
+      min-width: 220px;
+    }
+
+    .globalFooter {
+      text-align: center;
+      padding: 6px 14px 8px;
+      font-size: 0.74rem;
+      line-height: 1.22;
+      font-weight: 600;
+    }
+
+    #welcomeScreen .globalFooter {
+      color: rgba(255,255,255,0.96);
+      z-index: 1;
+      position: relative;
+    }
+
+    /* COUNTDOWN */
+    #countdownOverlay {
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(circle at center, rgba(255,255,255,0.08), rgba(17, 18, 38, 0.72)),
+        rgba(17, 18, 38, 0.62);
+      backdrop-filter: blur(8px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 99999;
+      overflow: hidden;
+    }
+
+    .countdownNumber {
+      color: white;
+      font-size: clamp(4rem, 14vw, 9rem);
+      font-weight: 700;
+      text-shadow: 0 8px 24px rgba(0,0,0,0.28);
+      animation: popIn 0.9s ease;
+      z-index: 2;
+    }
+
+    @keyframes popIn {
+      0% { transform: scale(0.35); opacity: 0; }
+      40% { transform: scale(1.15); opacity: 1; }
+      100% { transform: scale(1); opacity: 1; }
+    }
+
+    /* GAME SCREEN (Increased Font Sizes) */
+    #gameScreen {
+      display: none;
+      min-height: 100vh;
+      height: 100vh;
+      padding: 0;
+      overflow: hidden;
+      background: transparent;
+    }
+
+    .gameViewport {
+      width: 100vw;
+      height: 100vh;
+      overflow: hidden;
+      display: flex;
+      align-items: flex-start;
+      justify-content: center;
+      padding: 6px;
+    }
+
+    .gameScaleWrap {
+      width: 1320px;
+      height: 780px;
+      transform: scale(var(--game-scale));
+      transform-origin: top center;
+      will-change: transform;
+    }
+
+    .wrap {
+      width: 1320px;
+      height: 780px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-rows: auto auto 86px auto auto;
+      gap: 8px;
+      overflow: hidden;
+      align-content: start;
+    }
+
+    .topHeader {
+      position: relative;
+      background: linear-gradient(135deg, #ff5ca0, #6b5cff, #13b9ff);
+      color: white;
+      border-radius: 18px;
+      padding: 12px 84px 12px 16px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .topHeader::before {
+      content:"";
+      position:absolute;
+      inset:auto auto -35px -35px;
+      width: 160px;
+      height: 160px;
+      border-radius:50%;
+      background: rgba(255,255,255,0.12);
+    }
+
+    .topHeader h1 {
+      margin: 0 0 2px;
+      font-size: 1.95rem; /* Increased */
+      line-height: 1.04;
+      position: relative;
+      z-index: 1;
+    }
+
+    .topHeader p {
+      margin: 0;
+      font-size: 1.05rem; /* Increased */
+      line-height: 1.14;
+      font-weight: 600;
+      position: relative;
+      z-index: 1;
+    }
+
+    .topHeader .cornerLogo {
+      top: 8px;
+      right: 8px;
+      width: 62px;
+      max-width: none;
+    }
+
+    .controlPanel {
+      background: rgba(255,255,255,0.84);
+      backdrop-filter: blur(8px);
+      border: 1px solid #ffffffaa;
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 10px;
+      display: grid;
+      grid-template-columns: 1.25fr 1fr 1fr auto;
+      gap: 10px;
+      align-items: end;
+    }
+
+    .controlGroup label {
+      display: block;
+      margin-bottom: 4px;
+      font-size: 0.88rem; /* Increased */
+      font-weight: 700;
+      color: #4b4d73;
+    }
+
+    .controlGroup select,
+    .controlGroup button {
+      width: 100%;
+      border: none;
+      border-radius: 12px;
+      padding: 10px 12px;
+      font-family: inherit;
+      font-size: 1.05rem; /* Increased */
+      background: var(--soft);
+      color: var(--ink);
+      font-weight: 600;
+      min-height: 44px;
+    }
+
+    .controlGroup select:focus {
+      outline: 3px solid rgba(107,92,255,0.18);
+    }
+
+    .gameBtn {
+      background: linear-gradient(135deg, #ff7a00, #ff4f87);
+      color: #c9184a !important;
+      cursor: pointer;
+      box-shadow: 0 8px 18px rgba(255,79,135,0.24);
+      transition: transform 0.16s ease;
+    }
+
+    .gameBtn:hover { transform: translateY(-1px); }
+
+    .scoreboard {
+      display: grid;
+      grid-template-columns: 1fr auto 1fr;
+      gap: 8px;
+      align-items: stretch;
+    }
+
+    .playerCard {
+      background: linear-gradient(180deg, #ffffff, #f6f8ff);
+      border-radius: 16px;
+      padding: 12px;
+      border: 3px solid transparent;
+      box-shadow: var(--shadow);
+      text-align: center;
+      transition: transform 0.18s ease, border-color 0.18s ease, box-shadow 0.18s ease, background 0.18s ease;
+      min-height: 100px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      gap: 2px;
+    }
+
+    .avatarDisplay {
+      font-size: 1.8rem; /* Increased */
+      line-height: 1;
+      margin-bottom: 2px;
+    }
+
+    .playerCard h2 {
+      margin: 0;
+      font-size: 1.2rem; /* Increased */
+      color: #36406b;
+      line-height: 1.08;
+    }
+
+    .score {
+      font-size: 2.6rem; /* Increased */
+      font-weight: 700;
+      color: #121733;
+      line-height: 1.02;
+    }
+
+    .turnLight {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      margin: 4px auto 0;
+      background: #d9deef;
+      box-shadow: inset 0 0 4px rgba(0,0,0,0.22);
+      transition: 0.18s ease;
+    }
+
+    .active-turn {
+      background: linear-gradient(180deg, #f2fff8, #e7fff0);
+      border-color: #20b45b;
+      box-shadow: 0 0 0 4px rgba(32,180,91,0.14), var(--shadow);
+      transform: translateY(-1px);
+    }
+
+    .active-turn .turnLight {
+      background: #20b45b;
+      box-shadow: 0 0 10px rgba(32,180,91,0.8), 0 0 18px rgba(32,180,91,0.45);
+    }
+
+    .winner-glow {
+      animation: winnerGlow 1.2s ease-in-out infinite alternate;
+    }
+
+    @keyframes winnerGlow {
+      0% { box-shadow: 0 0 0 4px rgba(255,255,255,0.0), 0 0 0 rgba(255,255,255,0); }
+      100% { box-shadow: 0 0 0 4px rgba(255,255,255,0.18), 0 0 24px rgba(255,255,255,0.46); }
+    }
+
+    .midInfo {
+      min-width: 180px;
+      background: linear-gradient(180deg, #ffffff, #f8f4ff);
+      border-radius: 16px;
+      box-shadow: var(--shadow);
+      padding: 10px 14px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      text-align: center;
+      gap: 4px;
+      font-weight: 700;
+      color: #5c2a90;
+      font-size: 1.1rem; /* Increased */
+    }
+
+    .arena {
+      position: relative;
+      height: 86px;
+      border-radius: 18px;
+      background:
+        linear-gradient(180deg, rgba(255,255,255,0.75), rgba(255,255,255,0.5)),
+        linear-gradient(135deg, #ffd4e5, #e7dcff, #d6f6ff);
+      border: 3px solid rgba(255,255,255,0.85);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .net {
+      position: absolute;
+      left: 50%;
+      top: 0;
+      bottom: 0;
+      width: 4px;
+      transform: translateX(-50%);
+      background: repeating-linear-gradient(to bottom, #8c8db2 0 7px, transparent 7px 12px);
+      opacity: 0.9;
+    }
+
+    .ball {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      width: 22px;
+      height: 22px;
+      transform: translate(-50%, -50%);
+      border-radius: 50%;
+      background: radial-gradient(circle at 30% 30%, #fff7cf, #ffbd3e 58%, #ff8a00 100%);
+      box-shadow: 0 8px 16px rgba(255,138,0,0.28);
+      transition: left 0.35s ease;
+    }
+
+    .questionPanel {
+      background: rgba(255,255,255,0.88);
+      backdrop-filter: blur(8px);
+      border: 1px solid #ffffffcc;
+      border-radius: 18px;
+      box-shadow: var(--shadow);
+      padding: 12px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      min-height: unset;
+      height: auto;
+      overflow: hidden;
+      align-self: start;
+    }
+
+    .questionMeta {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .turnText {
+      font-size: 1.2rem; /* Increased */
+      font-weight: 700;
+      color: #2b3a68;
+      line-height: 1.1;
+    }
+
+    .category {
+      justify-self: end;
+      background: linear-gradient(135deg, #ffe6f1, #efe7ff);
+      color: #7b1d72;
+      padding: 6px 12px;
+      border-radius: 999px;
+      font-size: 0.95rem; /* Increased */
+      font-weight: 700;
+      text-align: center;
+      line-height: 1.05;
+    }
+
+    .question {
+      min-height: 80px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-size: 1.75rem; /* Increased */
+      line-height: 1.18;
+      font-weight: 700;
+      color: #161b36;
+      padding: 8px 12px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.72), rgba(246,248,255,0.72));
+      border-radius: 14px;
+    }
+
+    .question.idle {
+      color: #66719b;
+      font-size: 1.2rem; /* Increased */
+      font-style: italic;
+      background: linear-gradient(180deg, rgba(250,251,255,0.9), rgba(243,246,255,0.9));
+    }
+
+    .answers {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 10px;
+      flex: 0 0 auto;
+      align-content: start;
+    }
+
+    .answers.idle {
+      display: none;
+    }
+
+    .answerBtn {
+      border: none;
+      border-radius: 14px;
+      padding: 12px 14px;
+      min-height: 64px;
+      font-family: inherit;
+      font-size: 1.3rem; /* Increased */
+      line-height: 1.15;
+      background: linear-gradient(180deg, #eef3ff, #e5edff);
+      color: #1e2448;
+      font-weight: 700;
+      cursor: pointer;
+      transition: transform 0.16s ease, box-shadow 0.16s ease, background 0.16s ease;
+      box-shadow: 0 6px 14px rgba(39,54,97,0.08);
+      text-align: center;
+    }
+
+    .answerBtn:hover:not(:disabled) {
+      transform: translateY(-1px);
+      background: linear-gradient(180deg, #e4edff, #dbe8ff);
+    }
+
+    .answerBtn:disabled {
+      opacity: 0.86;
+      cursor: default;
+    }
+
+    .correct {
+      background: linear-gradient(180deg, #c8ffd9, #aff0c4) !important;
+      color: #115b2d !important;
+    }
+
+    .wrong {
+      background: linear-gradient(180deg, #ffd2d2, #ffbbbb) !important;
+      color: #7b2323 !important;
+    }
+
+    .message {
+      min-height: 24px;
+      text-align: center;
+      font-size: 1.05rem; /* Increased */
+      line-height: 1.14;
+      font-weight: 700;
+      color: #35406f;
+      padding: 2px 4px;
+    }
+
+    #gameScreen .globalFooter {
+      color: #48507e;
+      padding-top: 4px;
+      padding-bottom: 4px;
+      font-size: 0.75rem;
+    }
+
+    .smallNote {
+      font-size: 0.8rem; /* Increased */
+      color: #606792;
+      font-weight: 600;
+      line-height: 1.12;
+    }
+    /* Rest of CSS remains unchanged */
+    .confettiLayer {
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      overflow: hidden;
+      z-index: 9999;
+    }
+
+    .confetti {
+      position: absolute;
+      width: 10px;
+      height: 16px;
+      opacity: 0.92;
+      top: -20px;
+      animation: confettiFall linear forwards;
+      border-radius: 3px;
+    }
+
+    @keyframes confettiFall {
+      0% { transform: translateY(0) rotate(0deg); opacity: 1; }
+      100% { transform: translateY(110vh) rotate(720deg); opacity: 0.9; }
+    }
+
+    @media (max-width: 1080px) {
+      .welcomeInner {
+        grid-template-columns: 1fr;
+        text-align: center;
+        padding-top: 22px;
+      }
+
+      .welcomeRight {
+        align-items: center;
+        padding-right: 0;
+      }
+
+      .instructionGrid,
+      .avatarGrid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 820px) {
+      body.compact-lock {
+        overflow: auto;
+      }
+
+      #gameScreen {
+        height: auto;
+        min-height: 100vh;
+        overflow: auto;
+      }
+
+      .gameViewport {
+        height: auto;
+        min-height: 100vh;
+        padding: 8px;
+      }
+
+      .gameScaleWrap {
+        width: 100%;
+        height: auto;
+        transform: none !important;
+      }
+
+      .wrap {
+        width: 100%;
+        height: auto;
+        min-height: calc(100vh - 16px);
+        grid-template-rows: auto;
+      }
+
+      .scoreboard,
+      .controlPanel,
+      .answers,
+      .questionMeta {
+        grid-template-columns: 1fr;
+      }
+
+      .midInfo { min-width: unset; }
+      .category { justify-self: stretch; }
+      .answerBtn { min-height: 56px; }
+    }
+  </style>
+</head>
+<body class="compact-lock">
+  <div class="appShell">
+
+    <section id="welcomeScreen">
+      <img src="logo.png" alt="Logo" class="cornerLogo">
+
+      <div class="welcomeInner">
+        <div class="welcomeLeft">
+          <div class="heroCard">
+            <div class="welcomeTrail"></div>
+            <div class="welcomeBall"></div>
+            <img src="image_biology.png" alt="Εικονογράφηση Βιολογίας">
+          </div>
+        </div>
+
+        <div class="welcomeRight">
+          <h1 class="welcomeTitle">Πινγκ Πονγκ Βιολογίας</h1>
+          <p class="welcomeSubtitle">
+            Μια γρήγορη επανάληψη στη Βιολογία της Β΄ Γυμνασίου.
+          </p>
+
+          <div class="instructionCard">
+            <h2>Οδηγίες</h2>
+            <div class="instructionGrid">
+              <div class="instructionItem">🎯 Δύο παίκτες/τριες - ομάδες απαντούν εναλλάξ σε ερωτήσεις πολλαπλής επιλογής.</div>
+              <div class="instructionItem">💡 Η ομάδα που έχει σειρά φωτίζεται με πράσινη ένδειξη.</div>
+              <div class="instructionItem">✅ Κάθε σωστή απάντηση δίνει 1 πόντο.</div>
+              <div class="instructionItem">❌ Σε λάθος απάντηση εμφανίζεται η σωστή επιλογή.</div>
+              <div class="instructionItem">🧬 Μπορείς να επιλέξεις όλη την ύλη, συγκεκριμένο κεφάλαιο ή συγκεκριμένη υποενότητα.</div>
+              <div class="instructionItem">🏆 Νικήτρια ομάδα είναι εκείνη με το υψηλότερο σκορ στο τέλος.</div>
+            </div>
+          </div>
+
+          <div class="avatarCard">
+            <h2>Επιλογή avatar ομάδων</h2>
+            <div class="avatarGrid">
+              <div class="avatarSelector">
+                <label for="avatar1">Παίκτης/τρια - Ομάδα 1</label>
+                <select id="avatar1">
+                  <option value="🧠">🧠</option>
+                  <option value="🚀">🚀</option>
+                  <option value="😎">😎</option>
+                  <option value="🔥">🔥</option>
+                  <option value="🎯">🎯</option>
+                  <option value="⚡">⚡</option>
+                  <option value="🌟">🌟</option>
+                  <option value="🤖">🤖</option>
+                </select>
+              </div>
+              <div class="avatarSelector">
+                <label for="avatar2">Παίκτης/τρια - Ομάδα 2</label>
+                <select id="avatar2">
+                  <option value="🎯">🎯</option>
+                  <option value="🧠">🧠</option>
+                  <option value="🚀">🚀</option>
+                  <option value="😎">😎</option>
+                  <option value="🔥">🔥</option>
+                  <option value="⚡">⚡</option>
+                  <option value="🌟">🌟</option>
+                  <option value="🤖">🤖</option>
+                </select>
+              </div>
+            </div>
+          </div>
+
+          <div class="welcomeActions">
+            <button class="ctaBtn ctaPrimary" onclick="startFromWelcome()">Έναρξη Παιχνιδιού</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="globalFooter">
+        Παναγιώτης Δόμβρος, Εκπαιδευτικός Αγγλικής & Θεατρολόγος, Διευθυντής 1ου Γυμνασίου Πυλαίας
+      </div>
+    </section>
+
+    <section id="gameScreen">
+      <div class="gameViewport">
+        <div class="gameScaleWrap" id="gameScaleWrap">
+          <div class="wrap">
+
+            <header class="topHeader">
+              <img src="logo.png" alt="Logo" class="cornerLogo">
+              <h1>Πινγκ Πονγκ Βιολογίας - Β΄ Γυμνασίου</h1>
+              <p>Επίλεξε ύλη Βιολογίας και πάτησε έναρξη για να ξεκινήσει ο αγώνας.</p>
+            </header>
+
+            <section class="controlPanel">
+              <div class="controlGroup">
+                <label for="modeSelect">Τύπος ερωτήσεων</label>
+                <select id="modeSelect">
+                  <option value="all">Τυχαίες από όλη την ύλη</option>
+                  <option value="chapter">Συγκεκριμένο κεφάλαιο</option>
+                  <option value="section">Συγκεκριμένη υποενότητα</option>
+                </select>
+              </div>
+
+              <div class="controlGroup">
+                <label for="chapterSelect">Επιλογή</label>
+                <select id="chapterSelect"></select>
+              </div>
+
+              <div class="controlGroup">
+                <label for="questionCount">Πλήθος ερωτήσεων</label>
+                <select id="questionCount">
+                  <option value="10">10 ερωτήσεις</option>
+                  <option value="15" selected>15 ερωτήσεις</option>
+                  <option value="20">20 ερωτήσεις</option>
+                  <option value="30">30 ερωτήσεις</option>
+                  <option value="40">40 ερωτήσεις</option>
+                </select>
+              </div>
+
+              <div class="controlGroup">
+                <label>&nbsp;</label>
+                <button class="gameBtn" onclick="startGame()">Έναρξη / Νέο Παιχνίδι</button>
+              </div>
+            </section>
+
+            <section class="scoreboard">
+              <div class="playerCard" id="player1Card">
+                <div class="avatarDisplay" id="player1AvatarDisplay">🧠</div>
+                <h2>Παίκτης/τρια - Ομάδα 1</h2>
+                <div class="score" id="p1Score">0</div>
+                <div class="turnLight"></div>
+              </div>
+
+              <div class="midInfo">
+                <div id="phaseLabel">Αναμονή έναρξης</div>
+                <div id="roundInfo">Γύρος 0 / 0</div>
+                <div class="smallNote" id="selectionInfo">Επίλεξε τρόπο παιχνιδιού και πάτησε έναρξη.</div>
+              </div>
+
+              <div class="playerCard" id="player2Card">
+                <div class="avatarDisplay" id="player2AvatarDisplay">🎯</div>
+                <h2>Παίκτης/τρια - Ομάδα 2</h2>
+                <div class="score" id="p2Score">0</div>
+                <div class="turnLight"></div>
+              </div>
+            </section>
+
+            <div class="arena">
+              <div class="net"></div>
+              <div class="ball" id="ball"></div>
+            </div>
+
+            <section class="questionPanel">
+              <div class="questionMeta">
+                <div class="turnText" id="turnText">Πάτησε «Έναρξη / Νέο Παιχνίδι» για να ξεκινήσει ο αγώνας.</div>
+                <div class="category" id="categoryLabel">Κατηγορία: -</div>
+              </div>
+
+              <div class="question idle" id="question">Ο χώρος ερωτήσεων θα ενεργοποιηθεί μόλις επιλεγεί κατηγορία και πατηθεί η έναρξη.</div>
+              <div class="answers idle" id="answers"></div>
+              <div class="message" id="message"></div>
+            </section>
+
+            <div class="globalFooter">
+              Παναγιώτης Δόμβρος, Εκπαιδευτικός Αγγλικής & Θεατρολόγος, Διευθυντής του 1ου Γυμνασίου Πυλαίας
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <div id="countdownOverlay">
+    <div class="countdownNumber" id="countdownNumber">3</div>
+  </div>
+
+  <div class="confettiLayer" id="confettiLayer"></div>
+
+  
+  <script>
+    const chapterData = {
+  "K1": {
+    "title": "Κεφάλαιο 1: Η οργάνωση της ζωής",
+    "short": "Κεφάλαιο 1",
+    "sections": {
+      "1.1": {
+        "title": "Ενότητα 1.1: Τα μόρια της ζωής",
+        "short": "Ενότητα 1.1",
+        "questions": [
+          {
+            "category": "Ενότητα 1.1: Τα μόρια της ζωής",
+            "prompt": "Ποια χημική ένωση αποτελεί το κύριο συστατικό των ζωντανών οργανισμών (70% κατά μέσο όρο);",
+            "options": [
+              "Πρωτεΐνες",
+              "Νερό",
+              "Λιπίδια",
+              "DNA"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.1"
+          },
+          {
+            "category": "Ενότητα 1.1: Τα μόρια της ζωής",
+            "prompt": "Ποια είναι η δομική μονάδα των πρωτεϊνών;",
+            "options": [
+              "Γλυκόζη",
+              "Νουκλεοτίδια",
+              "Αμινοξέα",
+              "Λιπαρά οξέα"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K1",
+            "sectionKey": "1.1"
+          },
+          {
+            "category": "Ενότητα 1.1: Τα μόρια της ζωής",
+            "prompt": "Ο πολυσακχαρίτης που αποτελεί αποθήκη ενέργειας στα φυτά είναι:",
+            "options": [
+              "Το άμυλο",
+              "Το γλυκογόνο",
+              "Η κυτταρίνη",
+              "Η γλυκόζη"
+            ],
+            "correctIndex": 0,
+            "chapterKey": "K1",
+            "sectionKey": "1.1"
+          },
+          {
+            "category": "Ενότητα 1.1: Τα μόρια της ζωής",
+            "prompt": "Ποια μόρια χρησιμοποιούνται κυρίως ως αποθήκες ενέργειας και δομικά συστατικά των μεμβρανών;",
+            "options": [
+              "Νουκλεϊκά οξέα",
+              "Λιπίδια",
+              "Πρωτεΐνες",
+              "Υδατάνθρακες"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.1"
+          },
+          {
+            "category": "Ενότητα 1.1: Τα μόρια της ζωής",
+            "prompt": "Το DNA περιέχει τις πληροφορίες για την κατασκευή:",
+            "options": [
+              "Μόνο των λιπιδίων",
+              "Των υδατανθράκων",
+              "Των πρωτεϊνών",
+              "Του αμύλου"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K1",
+            "sectionKey": "1.1"
+          },
+          {
+            "category": "Ενότητα 1.1: Τα μόρια της ζωής",
+            "prompt": "Ποιος πολυσακχαρίτης αποτελεί το κύριο συστατικό του κυτταρικού τοιχώματος των φυτών;",
+            "options": [
+              "Γλυκογόνο",
+              "Άμυλο",
+              "Κυτταρίνη",
+              "Λακτόζη"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K1",
+            "sectionKey": "1.1"
+          },
+          {
+            "category": "Ενότητα 1.1: Τα μόρια της ζωής",
+            "prompt": "Τα ένζυμα ανήκουν στην κατηγορία των:",
+            "options": [
+              "Λιπιδίων",
+              "Πρωτεϊνών",
+              "Νουκλεϊκών οξέων",
+              "Πολυσακχαριτών"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.1"
+          },
+          {
+            "category": "Ενότητα 1.1: Τα μόρια της ζωής",
+            "prompt": "Πού αποθηκεύουν το γλυκογόνο οι ζωικοί οργανισμοί;",
+            "options": [
+              "Στα φύλλα",
+              "Στο ήπαρ και τους μυς",
+              "Στο κυτταρικό τοίχωμα",
+              "Στα μιτοχόνδρια"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.1"
+          },
+          {
+            "category": "Ενότητα 1.1: Τα μόρια της ζωής",
+            "prompt": "Τα νουκλεϊκά οξέα είναι:",
+            "options": [
+              "Το DNA και το RNA",
+              "Η γλυκόζη και το άμυλο",
+              "Τα αμινοξέα",
+              "Τα λίπη και τα έλαια"
+            ],
+            "correctIndex": 0,
+            "chapterKey": "K1",
+            "sectionKey": "1.1"
+          },
+          {
+            "category": "Ενότητα 1.1: Τα μόρια της ζωής",
+            "prompt": "Το νερό λειτουργεί ως:",
+            "options": [
+              "Αποκλειστικά πηγή ενέργειας",
+              "Διαλύτης και μέσο μεταφοράς ουσιών",
+              "Γενετικό υλικό",
+              "Δομικό στοιχείο των νουκλεοτιδίων"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.1"
+          }
+        ]
+      },
+      "1.2": {
+        "title": "Ενότητα 1.2: Κύτταρο: η μονάδα της ζωής",
+        "short": "Ενότητα 1.2",
+        "questions": [
+          {
+            "category": "Ενότητα 1.2: Κύτταρο: η μονάδα της ζωής",
+            "prompt": "Ποιο οργανίδιο ελέγχει όλες τις δραστηριότητες του κυττάρου;",
+            "options": [
+              "Μιτοχόνδριο",
+              "Πυρήνας",
+              "Ριβόσωμα",
+              "Λυσόσωμα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.2"
+          },
+          {
+            "category": "Ενότητα 1.2: Κύτταρο: η μονάδα της ζωής",
+            "prompt": "Η πλασματική μεμβράνη:",
+            "options": [
+              "Είναι πλήρως στεγανή",
+              "Επιτρέπει την επιλεκτική διέλευση ουσιών",
+              "Υπάρχει μόνο στα φυτικά κύτταρα",
+              "Παράγει ενέργεια"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.2"
+          },
+          {
+            "category": "Ενότητα 1.2: Κύτταρο: η μονάδα της ζωής",
+            "prompt": "Σε ποιο οργανίδιο γίνεται η φωτοσύνθεση;",
+            "options": [
+              "Στα μιτοχόνδρια",
+              "Στους χλωροπλάστες",
+              "Στον πυρήνα",
+              "Στο κυτταρικό τοίχωμα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.2"
+          },
+          {
+            "category": "Ενότητα 1.2: Κύτταρο: η μονάδα της ζωής",
+            "prompt": "Πού γίνεται η απελευθέρωση ενέργειας (κυτταρική αναπνοή);",
+            "options": [
+              "Στα μιτοχόνδρια",
+              "Στα κενοτόπια",
+              "Στα ριβοσώματα",
+              "Στο ενδοπλασματικό δίκτυο"
+            ],
+            "correctIndex": 0,
+            "chapterKey": "K1",
+            "sectionKey": "1.2"
+          },
+          {
+            "category": "Ενότητα 1.2: Κύτταρο: η μονάδα της ζωής",
+            "prompt": "Το κυτταρικό τοίχωμα συναντάται:",
+            "options": [
+              "Σε όλα τα κύτταρα",
+              "Μόνο στα ζωικά κύτταρα",
+              "Μόνο στα φυτικά κύτταρα",
+              "Στον πυρήνα"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K1",
+            "sectionKey": "1.2"
+          },
+          {
+            "category": "Ενότητα 1.2: Κύτταρο: η μονάδα της ζωής",
+            "prompt": "Το κυτταρόπλασμα είναι:",
+            "options": [
+              "Ένας σκληρός εξωτερικός σκελετός",
+              "Ο χώρος ανάμεσα στην πλασματική μεμβράνη και τον πυρήνα",
+              "Το κέντρο ελέγχου",
+              "Η αποθήκη του DNA"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.2"
+          },
+          {
+            "category": "Ενότητα 1.2: Κύτταρο: η μονάδα της ζωής",
+            "prompt": "Τα κενοτόπια στα φυτικά κύτταρα χρησιμεύουν κυρίως για:",
+            "options": [
+              "Φωτοσύνθεση",
+              "Αποθήκευση νερού και ουσιών",
+              "Πρωτεϊνοσύνθεση",
+              "Κυτταρική διαίρεση"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.2"
+          },
+          {
+            "category": "Ενότητα 1.2: Κύτταρο: η μονάδα της ζωής",
+            "prompt": "Ποιο από τα παρακάτω είναι προκαρυωτικό κύτταρο;",
+            "options": [
+              "Φυτικό κύτταρο",
+              "Ζωικό κύτταρο",
+              "Κύτταρο βακτηρίου",
+              "Κύτταρο μύκητα"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K1",
+            "sectionKey": "1.2"
+          },
+          {
+            "category": "Ενότητα 1.2: Κύτταρο: η μονάδα της ζωής",
+            "prompt": "Ποια είναι η διαφορά των ευκαρυωτικών κυττάρων από τα προκαρυωτικά;",
+            "options": [
+              "Έχουν πλασματική μεμβράνη",
+              "Διαθέτουν σχηματισμένο πυρήνα",
+              "Έχουν κυτταρόπλασμα",
+              "Έχουν ριβοσώματα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.2"
+          },
+          {
+            "category": "Ενότητα 1.2: Κύτταρο: η μονάδα της ζωής",
+            "prompt": "Το DNA στα προκαρυωτικά κύτταρα βρίσκεται:",
+            "options": [
+              "Μέσα στον πυρήνα",
+              "Ελεύθερο στο κυτταρόπλασμα",
+              "Στους χλωροπλάστες",
+              "Στο κυτταρικό τοίχωμα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.2"
+          }
+        ]
+      },
+      "1.3": {
+        "title": "Ενότητα 1.3: Επίπεδα οργάνωσης",
+        "short": "Ενότητα 1.3",
+        "questions": [
+          {
+            "category": "Ενότητα 1.3: Επίπεδα οργάνωσης",
+            "prompt": "Ποια είναι η σωστή σειρά των επιπέδων οργάνωσης στους πολυκύτταρους οργανισμούς;",
+            "options": [
+              "Κύτταρο -> Όργανο -> Ιστός",
+              "Κύτταρο -> Ιστός -> Όργανο -> Σύστημα οργάνων",
+              "Ιστός -> Κύτταρο -> Σύστημα",
+              "Όργανο -> Ιστός -> Κύτταρο"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.3"
+          },
+          {
+            "category": "Ενότητα 1.3: Επίπεδα οργάνωσης",
+            "prompt": "Μια ομάδα κυττάρων που έχουν παρόμοια μορφή και επιτελούν την ίδια λειτουργία ονομάζεται:",
+            "options": [
+              "Όργανο",
+              "Οργανισμός",
+              "Ιστός",
+              "Σύστημα"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K1",
+            "sectionKey": "1.3"
+          },
+          {
+            "category": "Ενότητα 1.3: Επίπεδα οργάνωσης",
+            "prompt": "Η καρδιά είναι ένα παράδειγμα:",
+            "options": [
+              "Ιστού",
+              "Κυττάρου",
+              "Οργάνου",
+              "Συστήματος οργάνων"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K1",
+            "sectionKey": "1.3"
+          },
+          {
+            "category": "Ενότητα 1.3: Επίπεδα οργάνωσης",
+            "prompt": "Το στομάχι, το έντερο και το ήπαρ συνεργάζονται για να αποτελέσουν:",
+            "options": [
+              "Έναν ιστό",
+              "Ένα σύστημα οργάνων",
+              "Ένα κύτταρο",
+              "Έναν πληθυσμό"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.3"
+          },
+          {
+            "category": "Ενότητα 1.3: Επίπεδα οργάνωσης",
+            "prompt": "Ποιο από τα παρακάτω αποτελεί το ανώτερο επίπεδο οργάνωσης;",
+            "options": [
+              "Το μυϊκό κύτταρο",
+              "Ο μυϊκός ιστός",
+              "Ο άνθρωπος (οργανισμός)",
+              "Το κυκλοφορικό σύστημα"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K1",
+            "sectionKey": "1.3"
+          },
+          {
+            "category": "Ενότητα 1.3: Επίπεδα οργάνωσης",
+            "prompt": "Στα φυτά, μια ομάδα ιστών που συνεργάζονται (π.χ. φύλλο) ονομάζεται:",
+            "options": [
+              "Σύστημα",
+              "Όργανο",
+              "Κύτταρο",
+              "Αποικία"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.3"
+          },
+          {
+            "category": "Ενότητα 1.3: Επίπεδα οργάνωσης",
+            "prompt": "Οι μονοκύτταροι οργανισμοί:",
+            "options": [
+              "Αποτελούνται από πολλούς ιστούς",
+              "Επιτελούν όλες τις λειτουργίες σε ένα κύτταρο",
+              "Δεν έχουν DNA",
+              "Είναι πάντα ορατοί με γυμνό μάτι"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.3"
+          },
+          {
+            "category": "Ενότητα 1.3: Επίπεδα οργάνωσης",
+            "prompt": "Ποιο σύστημα είναι υπεύθυνο για τη μεταφορά ουσιών στον άνθρωπο;",
+            "options": [
+              "Πεπτικό",
+              "Κυκλοφορικό",
+              "Νευρικό",
+              "Ερειστικό"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.3"
+          },
+          {
+            "category": "Ενότητα 1.3: Επίπεδα οργάνωσης",
+            "prompt": "Τα οστά και οι μύες συνεργάζονται για να σχηματίσουν:",
+            "options": [
+              "Το αναπνευστικό σύστημα",
+              "Το ερειστικό και μυϊκό σύστημα (κίνηση)",
+              "Το νευρικό σύστημα",
+              "Τον επιθηλιακό ιστό"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.3"
+          },
+          {
+            "category": "Ενότητα 1.3: Επίπεδα οργάνωσης",
+            "prompt": "Ο όρος \"οργανισμός\" αναφέρεται σε:",
+            "options": [
+              "Μόνο τα ζώα",
+              "Οποιαδήποτε ζωντανή οντότητα (μονοκύτταρη ή πολυκύτταρη)",
+              "Μόνο τα συστήματα οργάνων",
+              "Τους ιστούς των φυτών"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K1",
+            "sectionKey": "1.3"
+          }
+        ]
+      }
+    }
+  },
+  "K2": {
+    "title": "Κεφάλαιο 2: Πρόσληψη ουσιών και πέψη",
+    "short": "Κεφάλαιο 2",
+    "sections": {
+      "2.1": {
+        "title": "Ενότητα 2.1: Πρόσληψη ουσιών και πέψη στους μονοκύτταρους",
+        "short": "Ενότητα 2.1",
+        "questions": [
+          {
+            "category": "Ενότητα 2.1: Πρόσληψη ουσιών και πέψη στους μονοκύτταρους",
+            "prompt": "Οι μονοκύτταροι οργανισμοί προσλαμβάνουν την τροφή τους:",
+            "options": [
+              "Με το στόμα",
+              "Με τη βοήθεια οργάνων",
+              "Απευθείας από το περιβάλλον μέσω της μεμβράνης",
+              "Μόνο με φωτοσύνθεση"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K2",
+            "sectionKey": "2.1"
+          },
+          {
+            "category": "Ενότητα 2.1: Πρόσληψη ουσιών και πέψη στους μονοκύτταρους",
+            "prompt": "Η αμοιβάδα εγκλωβίζει την τροφή της σχηματίζοντας:",
+            "options": [
+              "Βλεφαρίδες",
+              "Ψευδοπόδια",
+              "Ρίζες",
+              "Στομάχια"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.1"
+          },
+          {
+            "category": "Ενότητα 2.1: Πρόσληψη ουσιών και πέψη στους μονοκύτταρους",
+            "prompt": "Η διάσπαση των ουσιών στο εσωτερικό του μονοκύτταρου οργανισμού γίνεται στα:",
+            "options": [
+              "Μιτοχόνδρια",
+              "Πεπτικά κενοτόπια",
+              "Ριβοσώματα",
+              "Χλωροπλάστες"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.1"
+          },
+          {
+            "category": "Ενότητα 2.1: Πρόσληψη ουσιών και πέψη στους μονοκύτταρους",
+            "prompt": "Η διαδικασία κατά την οποία οι ουσίες διασπώνται σε απλούστερες ονομάζεται:",
+            "options": [
+              "Πρόσληψη",
+              "Πέψη",
+              "Αποβολή",
+              "Μεταφορά"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.1"
+          },
+          {
+            "category": "Ενότητα 2.1: Πρόσληψη ουσιών και πέψη στους μονοκύτταρους",
+            "prompt": "Ποιοι μονοκύτταροι οργανισμοί φωτοσυνθέτουν;",
+            "options": [
+              "Οι αμοιβάδες",
+              "Τα πρωτόζωα που μοιάζουν με φυτά (π.χ. ευγλήνη)",
+              "Όλα τα βακτήρια",
+              "Οι ιοί"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.1"
+          },
+          {
+            "category": "Ενότητα 2.1: Πρόσληψη ουσιών και πέψη στους μονοκύτταρους",
+            "prompt": "Στην αμοιβάδα, τα υπολείμματα της πέψης αποβάλλονται από:",
+            "options": [
+              "Τον πυρήνα",
+              "Οποιοδήποτε σημείο της πλασματικής μεμβράνης",
+              "Το κυτταρικό τοίχωμα",
+              "Τους χλωροπλάστες"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.1"
+          },
+          {
+            "category": "Ενότητα 2.1: Πρόσληψη ουσιών και πέψη στους μονοκύτταρους",
+            "prompt": "Οι ετερότροφοι μονοκύτταροι οργανισμοί:",
+            "options": [
+              "Παράγουν μόνοι την τροφή τους",
+              "Τρέφονται με άλλους οργανισμούς ή οργανικές ουσίες",
+              "Ζουν μόνο στο έδαφος",
+              "Δεν χρειάζονται ενέργεια"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.1"
+          },
+          {
+            "category": "Ενότητα 2.1: Πρόσληψη ουσιών και πέψη στους μονοκύτταρους",
+            "prompt": "Η είσοδος τροφής στην αμοιβάδα ονομάζεται:",
+            "options": [
+              "Εξωκύτταρη πέψη",
+              "Ενδοκύτταρη πέψη",
+              "Φαγοκυττάρωση",
+              "Φωτοσύνθεση"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K2",
+            "sectionKey": "2.1"
+          },
+          {
+            "category": "Ενότητα 2.1: Πρόσληψη ουσιών και πέψη στους μονοκύτταρους",
+            "prompt": "Τα ένζυμα που διασπούν την τροφή στο πεπτικό κενοτόπιο προέρχονται από:",
+            "options": [
+              "Τον αέρα",
+              "Το κυτταρόπλασμα",
+              "Το νερό του περιβάλλοντος",
+              "Το DNA"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.1"
+          },
+          {
+            "category": "Ενότητα 2.1: Πρόσληψη ουσιών και πέψη στους μονοκύτταρους",
+            "prompt": "Οι αυτότροφοι μονοκύτταροι οργανισμοί χρησιμοποιούν ως πηγή ενέργειας:",
+            "options": [
+              "Τη γλυκόζη άλλων οργανισμών",
+              "Το ηλιακό φως",
+              "Τις πρωτεΐνες",
+              "Το οξυγόνο"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.1"
+          }
+        ]
+      },
+      "2.2": {
+        "title": "Ενότητα 2.2: Πρόσληψη ουσιών και πέψη στα φυτά",
+        "short": "Ενότητα 2.2",
+        "questions": [
+          {
+            "category": "Ενότητα 2.2: Πρόσληψη ουσιών και πέψη στα φυτά",
+            "prompt": "Η διαδικασία παραγωγής τροφής στα φυτά ονομάζεται:",
+            "options": [
+              "Αναπνοή",
+              "Πέψη",
+              "Φωτοσύνθεση",
+              "Διαπνοή"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K2",
+            "sectionKey": "2.2"
+          },
+          {
+            "category": "Ενότητα 2.2: Πρόσληψη ουσιών και πέψη στα φυτά",
+            "prompt": "Ποιες ουσίες είναι απαραίτητες για τη φωτοσύνθεση;",
+            "options": [
+              "Οξυγόνο και γλυκόζη",
+              "Νερό και διοξείδιο του άνθρακα",
+              "Άζωτο και χώμα",
+              "Πρωτεΐνες και λίπη"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.2"
+          },
+          {
+            "category": "Ενότητα 2.2: Πρόσληψη ουσιών και πέψη στα φυτά",
+            "prompt": "Η χλωροφύλλη βρίσκεται:",
+            "options": [
+              "Στις ρίζες",
+              "Στους χλωροπλάστες",
+              "Στον πυρήνα",
+              "Στο κυτταρικό τοίχωμα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.2"
+          },
+          {
+            "category": "Ενότητα 2.2: Πρόσληψη ουσιών και πέψη στα φυτά",
+            "prompt": "Το προϊόν της φωτοσύνθεσης που χρησιμοποιείται για ενέργεια είναι:",
+            "options": [
+              "Το νερό",
+              "Η γλυκόζη",
+              "Το διοξείδιο του άνθρακα",
+              "Το άλας"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.2"
+          },
+          {
+            "category": "Ενότητα 2.2: Πρόσληψη ουσιών και πέψη στα φυτά",
+            "prompt": "Τα φυτά απορροφούν το νερό από το έδαφος μέσω:",
+            "options": [
+              "Των φύλλων",
+              "Των στομάτων",
+              "Των ριζικών τριχιδίων",
+              "Του άνθους"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K2",
+            "sectionKey": "2.2"
+          },
+          {
+            "category": "Ενότητα 2.2: Πρόσληψη ουσιών και πέψη στα φυτά",
+            "prompt": "Ποιο αέριο απελευθερώνεται στο περιβάλλον κατά τη φωτοσύνθεση;",
+            "options": [
+              "Διοξείδιο του άνθρακα",
+              "Άζωτο",
+              "Οξυγόνο",
+              "Υδρογόνο"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K2",
+            "sectionKey": "2.2"
+          },
+          {
+            "category": "Ενότητα 2.2: Πρόσληψη ουσιών και πέψη στα φυτά",
+            "prompt": "Τα \"στόματα\" στα φύλλα χρησιμεύουν για:",
+            "options": [
+              "Την απορρόφηση νερού",
+              "Την ανταλλαγή αερίων",
+              "Την προστασία από έντομα",
+              "Την παραγωγή χλωροφύλλης"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.2"
+          },
+          {
+            "category": "Ενότητα 2.2: Πρόσληψη ουσιών και πέψη στα φυτά",
+            "prompt": "Τα φυτά ονομάζονται παραγωγοί επειδή:",
+            "options": [
+              "Παράγουν διοξείδιο του άνθρακα",
+              "Παράγουν την οργανική τροφή τους από ανόργανες ουσίες",
+              "Παράγουν μόνο οξυγόνο",
+              "Παράγουν χώμα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.2"
+          },
+          {
+            "category": "Ενότητα 2.2: Πρόσληψη ουσιών και πέψη στα φυτά",
+            "prompt": "Η ενέργεια που δεσμεύει η χλωροφύλλη προέρχεται από:",
+            "options": [
+              "Το έδαφος",
+              "Το νερό",
+              "Τον ήλιο",
+              "Τον αέρα"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K2",
+            "sectionKey": "2.2"
+          },
+          {
+            "category": "Ενότητα 2.2: Πρόσληψη ουσιών και πέψη στα φυτά",
+            "prompt": "Το άμυλο στα φυτά είναι:",
+            "options": [
+              "Η μορφή με την οποία αποθηκεύεται η πλεονάζουσα γλυκόζη",
+              "Η ουσία που απορροφά το φως",
+              "Το αέριο που μπαίνει από τα στόματα",
+              "Το κύριο συστατικό της ρίζας"
+            ],
+            "correctIndex": 0,
+            "chapterKey": "K2",
+            "sectionKey": "2.2"
+          }
+        ]
+      },
+      "2.3": {
+        "title": "Ενότητα 2.3: Πρόσληψη ουσιών και πέψη στους ζωικούς οργανισμούς",
+        "short": "Ενότητα 2.3",
+        "questions": [
+          {
+            "category": "Ενότητα 2.3: Πρόσληψη ουσιών και πέψη στους ζωικούς οργανισμούς",
+            "prompt": "Οι ζωικοί οργανισμοί είναι:",
+            "options": [
+              "Αυτότροφοι",
+              "Ετερότροφοι",
+              "Παραγωγοί",
+              "Φωτοσυνθετικοί"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.3"
+          },
+          {
+            "category": "Ενότητα 2.3: Πρόσληψη ουσιών και πέψη στους ζωικούς οργανισμούς",
+            "prompt": "Τα ζώα που τρέφονται μόνο με φυτά ονομάζονται:",
+            "options": [
+              "Σαρκοφάγα",
+              "Παμφάγα",
+              "Φυτοφάγα",
+              "Αποικοδομητές"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K2",
+            "sectionKey": "2.3"
+          },
+          {
+            "category": "Ενότητα 2.3: Πρόσληψη ουσιών και πέψη στους ζωικούς οργανισμούς",
+            "prompt": "Η διάσπαση της τροφής που γίνεται σε μια κοιλότητα (π.χ. στομάχι) ονομάζεται:",
+            "options": [
+              "Ενδοκύτταρη πέψη",
+              "Εξωκύτταρη πέψη",
+              "Φωτοσύνθεση",
+              "Φαγοκυττάρωση"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.3"
+          },
+          {
+            "category": "Ενότητα 2.3: Πρόσληψη ουσιών και πέψη στους ζωικούς οργανισμούς",
+            "prompt": "Ποιο όργανο των πουλιών βοηθά στη λειοτρίβηση της τροφής;",
+            "options": [
+              "Το στομάχι",
+              "Ο πρόλοβος",
+              "Το στομάχι με παχιά μυϊκά τοιχώματα",
+              "Το ράμφος"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K2",
+            "sectionKey": "2.3"
+          },
+          {
+            "category": "Ενότητα 2.3: Πρόσληψη ουσιών και πέψη στους ζωικούς οργανισμούς",
+            "prompt": "Τα σαρκοφάγα ζώα έχουν αναπτυγμένους:",
+            "options": [
+              "Προγόμφιους",
+              "Κυνόδοντες",
+              "Τομείς",
+              "Μόνο τραπεζίτες"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.3"
+          },
+          {
+            "category": "Ενότητα 2.3: Πρόσληψη ουσιών και πέψη στους ζωικούς οργανισμούς",
+            "prompt": "Στο υδρόζωο η πέψη ξεκινά:",
+            "options": [
+              "Στο αίμα",
+              "Στην εντεροαγγειακή κοιλότητα",
+              "Στα κύτταρα των ποδιών",
+              "Στο κενοτόπιο"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.3"
+          },
+          {
+            "category": "Ενότητα 2.3: Πρόσληψη ουσιών και πέψη στους ζωικούς οργανισμούς",
+            "prompt": "Ποια ζώα έχουν πεπτικό σωλήνα που ξεκινά από το στόμα και καταλήγει στην έδρα;",
+            "options": [
+              "Μόνο τα θηλαστικά",
+              "Τα περισσότερα ασπόνδυλα και όλα τα σπονδυλωτά",
+              "Μόνο τα ψάρια",
+              "Η αμοιβάδα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.3"
+          },
+          {
+            "category": "Ενότητα 2.3: Πρόσληψη ουσιών και πέψη στους ζωικούς οργανισμούς",
+            "prompt": "Τα παμφάγα ζώα τρέφονται με:",
+            "options": [
+              "Μόνο φυτά",
+              "Μόνο ζώα",
+              "Φυτά και ζώα",
+              "Μόνο νερό"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K2",
+            "sectionKey": "2.3"
+          },
+          {
+            "category": "Ενότητα 2.3: Πρόσληψη ουσιών και πέψη στους ζωικούς οργανισμούς",
+            "prompt": "Η απορρόφηση των θρεπτικών ουσιών στα σπονδυλωτά γίνεται κυρίως:",
+            "options": [
+              "Στο στόμα",
+              "Στο λεπτό έντερο",
+              "Στο στομάχι",
+              "Στον οισοφάγο"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.3"
+          },
+          {
+            "category": "Ενότητα 2.3: Πρόσληψη ουσιών και πέψη στους ζωικούς οργανισμούς",
+            "prompt": "Οι οργανισμοί που τρέφονται με νεκρή οργανική ύλη ονομάζονται:",
+            "options": [
+              "Καταναλωτές 1ης τάξης",
+              "Αποικοδομητές",
+              "Παραγωγοί",
+              "Σαρκοφάγα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.3"
+          }
+        ]
+      },
+      "2.4": {
+        "title": "Ενότητα 2.4: Το πεπτικό σύστημα του ανθρώπου",
+        "short": "Ενότητα 2.4",
+        "questions": [
+          {
+            "category": "Ενότητα 2.4: Το πεπτικό σύστημα του ανθρώπου",
+            "prompt": "Η πέψη των υδατανθράκων (αμύλου) ξεκινά:",
+            "options": [
+              "Στο στομάχι",
+              "Στο στόμα με τη σίελο",
+              "Στο λεπτό έντερο",
+              "Στο παχύ έντερο"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.4"
+          },
+          {
+            "category": "Ενότητα 2.4: Το πεπτικό σύστημα του ανθρώπου",
+            "prompt": "Ο μυϊκός σωλήνας που συνδέει το στόμα με το στομάχι είναι:",
+            "options": [
+              "Η τραχεία",
+              "Ο οισοφάγος",
+              "Το λεπτό έντερο",
+              "Ο φάρυγγας"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.4"
+          },
+          {
+            "category": "Ενότητα 2.4: Το πεπτικό σύστημα του ανθρώπου",
+            "prompt": "Το γαστρικό υγρό εκκρίνεται:",
+            "options": [
+              "Στο συκώτι",
+              "Στο στομάχι",
+              "Στο στόμα",
+              "Στο πάγκρεας"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.4"
+          },
+          {
+            "category": "Ενότητα 2.4: Το πεπτικό σύστημα του ανθρώπου",
+            "prompt": "Η χολή παράγεται από:",
+            "options": [
+              "Το πάγκρεας",
+              "Το ήπαρ (συκώτι)",
+              "Το στομάχι",
+              "Τους σιελογόνους αδένες"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.4"
+          },
+          {
+            "category": "Ενότητα 2.4: Το πεπτικό σύστημα του ανθρώπου",
+            "prompt": "Ποιο όργανο απορροφά το περισσότερο νερό από τα υπολείμματα της τροφής;",
+            "options": [
+              "Το στομάχι",
+              "Το παχύ έντερο",
+              "Το λεπτό έντερο",
+              "Ο οισοφάγος"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.4"
+          },
+          {
+            "category": "Ενότητα 2.4: Το πεπτικό σύστημα του ανθρώπου",
+            "prompt": "Οι εντερικές λάχνες στο λεπτό έντερο βοηθούν:",
+            "options": [
+              "Στη μάσηση",
+              "Στην αύξηση της επιφάνειας απορρόφησης ουσιών",
+              "Στην κίνηση της τροφής προς τα πάνω",
+              "Στην παραγωγή χολής"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.4"
+          },
+          {
+            "category": "Ενότητα 2.4: Το πεπτικό σύστημα του ανθρώπου",
+            "prompt": "Ποιοι αδένες θεωρούνται \"προσαρτημένοι\" στο πεπτικό σύστημα;",
+            "options": [
+              "Η καρδιά και οι πνεύμονες",
+              "Το ήπαρ και το πάγκρεας",
+              "Το στομάχι και το έντερο",
+              "Οι νεφροί"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.4"
+          },
+          {
+            "category": "Ενότητα 2.4: Το πεπτικό σύστημα του ανθρώπου",
+            "prompt": "Η αμυλάση είναι ένζυμο που βρίσκεται:",
+            "options": [
+              "Στη χολή",
+              "Στο σάλιο",
+              "Στο παχύ έντερο",
+              "Στον ιδρώτα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.4"
+          },
+          {
+            "category": "Ενότητα 2.4: Το πεπτικό σύστημα του ανθρώπου",
+            "prompt": "Η διάσπαση των λιπών υποβοηθείται κυρίως από:",
+            "options": [
+              "Το γαστρικό υγρό",
+              "Τη χολή",
+              "Την αμυλάση",
+              "Το νερό"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.4"
+          },
+          {
+            "category": "Ενότητα 2.4: Το πεπτικό σύστημα του ανθρώπου",
+            "prompt": "Τι συμβαίνει στο ορθό;",
+            "options": [
+              "Γίνεται η κύρια πέψη των πρωτεϊνών",
+              "Σχηματίζονται και αποθηκεύονται προσωρινά τα κόπρανα",
+              "Παράγονται βιταμίνες από τον ήλιο",
+              "Απορροφάται όλη η γλυκόζη"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K2",
+            "sectionKey": "2.4"
+          }
+        ]
+      }
+    }
+  },
+  "K3": {
+    "title": "Κεφάλαιο 3: Μεταφορά και αποβολή ουσιών",
+    "short": "Κεφάλαιο 3",
+    "sections": {
+      "3.1": {
+        "title": "Ενότητα 3.1: Στους μονοκύτταρους οργανισμούς",
+        "short": "Ενότητα 3.1",
+        "questions": [
+          {
+            "category": "Ενότητα 3.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Η μεταφορά ουσιών στο εσωτερικό του μονοκύτταρου οργανισμού γίνεται κυρίως με:",
+            "options": [
+              "Κυκλοφορικό σύστημα",
+              "Διάχυση",
+              "Φλεβικό δίκτυο",
+              "Ώσμωση"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.1"
+          },
+          {
+            "category": "Ενότητα 3.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Η διάχυση είναι η κίνηση των μορίων από περιοχές:",
+            "options": [
+              "Χαμηλής συγκέντρωσης σε υψηλή",
+              "Υψηλής συγκέντρωσης σε χαμηλή",
+              "Μόνο μέσα στο νερό",
+              "Από τον πυρήνα προς τα έξω"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.1"
+          },
+          {
+            "category": "Ενότητα 3.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Ποιο οργανίδιο βοηθά στην αποβολή της περίσσειας του νερού στα πρωτόζωα;",
+            "options": [
+              "Μιτοχόνδριο",
+              "Πεπτικό κενοτόπιο",
+              "Συσπειρόμενο κενοτόπιο",
+              "Πλασματική μεμβράνη"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K3",
+            "sectionKey": "3.1"
+          },
+          {
+            "category": "Ενότητα 3.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Οι άχρηστες ουσίες αποβάλλονται από τους μονοκύτταρους οργανισμούς μέσω:",
+            "options": [
+              "Της πλασματικής μεμβράνης",
+              "Του πυρήνα",
+              "Των ριβοσωμάτων",
+              "Του κυτταρικού τοιχώματος"
+            ],
+            "correctIndex": 0,
+            "chapterKey": "K3",
+            "sectionKey": "3.1"
+          },
+          {
+            "category": "Ενότητα 3.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Η διάχυση σταματά όταν:",
+            "options": [
+              "Εξαντληθεί το οξυγόνο",
+              "Η συγκέντρωση των ουσιών γίνει παντού η ίδια",
+              "Το κύτταρο μεγαλώσει πολύ",
+              "Το κύτταρο διαιρεθεί"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.1"
+          },
+          {
+            "category": "Ενότητα 3.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Το οξυγόνο εισέρχεται στην αμοιβάδα με:",
+            "options": [
+              "Ενεργό μεταφορά",
+              "Διάχυση",
+              "Ψευδοπόδια",
+              "Κατάποση"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.1"
+          },
+          {
+            "category": "Ενότητα 3.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Το διοξείδιο του άνθρακα είναι για το κύτταρο:",
+            "options": [
+              "Θρεπτική ουσία",
+              "Προϊόν της φωτοσύνθεσης",
+              "Άχρηστη ουσία που πρέπει να αποβληθεί",
+              "Πηγή ενέργειας"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K3",
+            "sectionKey": "3.1"
+          },
+          {
+            "category": "Ενότητα 3.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Ποιοι οργανισμοί δεν χρειάζονται ιδιαίτερο σύστημα μεταφοράς;",
+            "options": [
+              "Τα θηλαστικά",
+              "Τα μονοκύτταρα",
+              "Τα δέντρα",
+              "Τα έντομα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.1"
+          },
+          {
+            "category": "Ενότητα 3.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Οι ουσίες που διακινούνται μέσω της μεμβράνης είναι:",
+            "options": [
+              "Μόνο το νερό",
+              "Μόνο το οξυγόνο",
+              "Νερό, οξυγόνο, θρεπτικά συστατικά και άχρηστες ουσίες",
+              "Μόνο οι πρωτεΐνες"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K3",
+            "sectionKey": "3.1"
+          },
+          {
+            "category": "Ενότητα 3.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Στους μονοκύτταρους οργανισμούς, η μεταφορά ουσιών εξυπηρετείται από:",
+            "options": [
+              "Την κυκλοφορία του κυτταροπλάσματος",
+              "Την καρδιά",
+              "Τις φλέβες",
+              "Το ξύλωμα"
+            ],
+            "correctIndex": 0,
+            "chapterKey": "K3",
+            "sectionKey": "3.1"
+          }
+        ]
+      },
+      "3.2": {
+        "title": "Ενότητα 3.2: Στα φυτά",
+        "short": "Ενότητα 3.2",
+        "questions": [
+          {
+            "category": "Ενότητα 3.2: Στα φυτά",
+            "prompt": "Το νερό και τα άλατα απορροφούνται από το έδαφος μέσω:",
+            "options": [
+              "Των φύλλων",
+              "Των στομάτων",
+              "Των ριζικών τριχιδίων",
+              "Του φλοιού"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K3",
+            "sectionKey": "3.2"
+          },
+          {
+            "category": "Ενότητα 3.2: Στα φυτά",
+            "prompt": "Το σύστημα αγωγών που μεταφέρει νερό και άλατα από τις ρίζες στα φύλλα ονομάζεται:",
+            "options": [
+              "Φλοίωμα",
+              "Ξύλωμα",
+              "Σκληρέγχυμα",
+              "Επιδερμίδα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.2"
+          },
+          {
+            "category": "Ενότητα 3.2: Στα φυτά",
+            "prompt": "Οι οργανικές ουσίες που παράγονται με τη φωτοσύνθεση μεταφέρονται μέσω:",
+            "options": [
+              "Του ξυλώματος",
+              "Των στομάτων",
+              "Του φλοιώματος",
+              "Των ριζικών τριχιδίων"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K3",
+            "sectionKey": "3.2"
+          },
+          {
+            "category": "Ενότητα 3.2: Στα φυτά",
+            "prompt": "Η αποβολή νερού υπό μορφή υδρατμών από τα φύλλα ονομάζεται:",
+            "options": [
+              "Αναπνοή",
+              "Φωτοσύνθεση",
+              "Διαπνοή",
+              "Ώσμωση"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K3",
+            "sectionKey": "3.2"
+          },
+          {
+            "category": "Ενότητα 3.2: Στα φυτά",
+            "prompt": "Τα στόματα των φύλλων βρίσκονται κυρίως:",
+            "options": [
+              "Στην πάνω επιφάνεια",
+              "Στην κάτω επιφάνεια",
+              "Στις ρίζες",
+              "Στο εσωτερικό του ξυλώματος"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.2"
+          },
+          {
+            "category": "Ενότητα 3.2: Στα φυτά",
+            "prompt": "Το ξύλωμα αποτελείται από:",
+            "options": [
+              "Ζωντανά κύτταρα",
+              "Νεκρά κύτταρα με ενισχυμένα τοιχώματα",
+              "Μόνο χλωροπλάστες",
+              "Συσπειρόμενα κενοτόπια"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.2"
+          },
+          {
+            "category": "Ενότητα 3.2: Στα φυτά",
+            "prompt": "Τι συμβαίνει στα στόματα όταν το φυτό έχει έλλειψη νερού;",
+            "options": [
+              "Ανοίγουν διάπλατα",
+              "Κλείνουν για να περιοριστεί η απώλεια νερού",
+              "Παράγουν περισσότερη τροφή",
+              "Μετατρέπονται σε ρίζες"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.2"
+          },
+          {
+            "category": "Ενότητα 3.2: Στα φυτά",
+            "prompt": "Η μεταφορά ουσιών στα φυτά γίνεται μέσω:",
+            "options": [
+              "Της κυκλοφορίας του αίματος",
+              "Του αγωγού ιστού",
+              "Των πνευμόνων",
+              "Των μυών"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.2"
+          },
+          {
+            "category": "Ενότητα 3.2: Στα φυτά",
+            "prompt": "Ποια ουσία μεταφέρει το φλοίωμα;",
+            "options": [
+              "Μόνο νερό",
+              "Διαλυμένες οργανικές ουσίες (τροφή)",
+              "Μόνο οξυγόνο",
+              "Άμμο"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.2"
+          },
+          {
+            "category": "Ενότητα 3.2: Στα φυτά",
+            "prompt": "Το φαινόμενο της διαπνοής δημιουργεί:",
+            "options": [
+              "Πίεση που ωθεί το νερό προς τα κάτω",
+              "Δύναμη που αναρροφά το νερό από τις ρίζες προς τα πάνω",
+              "Θερμότητα",
+              "Χλωροφύλλη"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.2"
+          }
+        ]
+      },
+      "3.3": {
+        "title": "Ενότητα 3.3: Στους ζωικούς οργανισμούς",
+        "short": "Ενότητα 3.3",
+        "questions": [
+          {
+            "category": "Ενότητα 3.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Ποιοι οργανισμοί διαθέτουν ανοικτό κυκλοφορικό σύστημα;",
+            "options": [
+              "Τα ψάρια",
+              "Τα έντομα και τα μαλάκια",
+              "Τα θηλαστικά",
+              "Τα πτηνά"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.3"
+          },
+          {
+            "category": "Ενότητα 3.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Στο κλειστό κυκλοφορικό σύστημα, το αίμα:",
+            "options": [
+              "Κινείται ελεύθερα στις κοιλότητες του σώματος",
+              "Παραμένει πάντα μέσα στα αγγεία",
+              "Δεν περιέχει οξυγόνο",
+              "Παράγεται από το στομάχι"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.3"
+          },
+          {
+            "category": "Ενότητα 3.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Τα σπονδυλωτά ζώα έχουν:",
+            "options": [
+              "Ανοικτό κυκλοφορικό",
+              "Κλειστό κυκλοφορικό",
+              "Κανένα σύστημα μεταφοράς",
+              "Μόνο τριχοειδή αγγεία"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.3"
+          },
+          {
+            "category": "Ενότητα 3.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Η καρδιά των ψαριών αποτελείται από:",
+            "options": [
+              "Δύο κοιλίες",
+              "Έναν κόλπο και μία κοιλία",
+              "Τέσσερις κοιλότητες",
+              "Δύο κόλπους"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.3"
+          },
+          {
+            "category": "Ενότητα 3.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Στο ανοικτό κυκλοφορικό σύστημα, το υγρό ονομάζεται:",
+            "options": [
+              "Αίμα",
+              "Αιμολέμφος",
+              "Κυτταρόπλασμα",
+              "Χυμός"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.3"
+          },
+          {
+            "category": "Ενότητα 3.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Ποιο όργανο αποβολής ουσιών έχουν οι γαιοσκώληκες;",
+            "options": [
+              "Νεφρίδια",
+              "Μαλπιγιανά σωληνάρια",
+              "Νεφρούς",
+              "Πνεύμονες"
+            ],
+            "correctIndex": 0,
+            "chapterKey": "K3",
+            "sectionKey": "3.3"
+          },
+          {
+            "category": "Ενότητα 3.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Τα έντομα αποβάλλουν τις άχρηστες ουσίες μέσω:",
+            "options": [
+              "Των βρανχίων",
+              "Των Μαλπιγιανών σωληναρίων",
+              "Του δέρματος",
+              "Των νεφρών"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.3"
+          },
+          {
+            "category": "Ενότητα 3.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Η καρδιά των θηλαστικών έχει:",
+            "options": [
+              "2 κοιλότητες",
+              "3 κοιλότητες",
+              "4 κοιλότητες",
+              "1 κοιλότητα"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K3",
+            "sectionKey": "3.3"
+          },
+          {
+            "category": "Ενότητα 3.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Η ανταλλαγή ουσιών μεταξύ αίματος και κυττάρων γίνεται στα:",
+            "options": [
+              "Τριχοειδή αγγεία",
+              "Αρτηρίες",
+              "Φλέβες",
+              "Καρδιά"
+            ],
+            "correctIndex": 0,
+            "chapterKey": "K3",
+            "sectionKey": "3.3"
+          },
+          {
+            "category": "Ενότητα 3.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Το ουρικό οξύ είναι η κύρια άχρηστη ουσία που αποβάλλουν:",
+            "options": [
+              "Τα ψάρια",
+              "Τα ερπετά και τα πτηνά",
+              "Τα θηλαστικά",
+              "Οι αμοιβάδες"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.3"
+          }
+        ]
+      },
+      "3.4": {
+        "title": "Ενότητα 3.4: Το κυκλοφορικό σύστημα του ανθρώπου",
+        "short": "Ενότητα 3.4",
+        "questions": [
+          {
+            "category": "Ενότητα 3.4: Το κυκλοφορικό σύστημα του ανθρώπου",
+            "prompt": "Ποιο αγγείο μεταφέρει το αίμα από την καρδιά προς τα όργανα;",
+            "options": [
+              "Φλέβες",
+              "Αρτηρίες",
+              "Τριχοειδή",
+              "Λεμφαγγεία"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.4"
+          },
+          {
+            "category": "Ενότητα 3.4: Το κυκλοφορικό σύστημα του ανθρώπου",
+            "prompt": "Η καρδιά του ανθρώπου βρίσκεται:",
+            "options": [
+              "Στη δεξιά πλευρά του θώρακα",
+              "Στην κοιλιακή χώρα",
+              "Στο αριστερό μέρος της θωρακικής κοιλότητας",
+              "Πίσω από το συκώτι"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K3",
+            "sectionKey": "3.4"
+          },
+          {
+            "category": "Ενότητα 3.4: Το κυκλοφορικό σύστημα του ανθρώπου",
+            "prompt": "Το αίμα που επιστρέφει από το σώμα μπαίνει στον:",
+            "options": [
+              "Δεξιό κόλπο",
+              "Αριστερό κόλπο",
+              "Δεξιά κοιλία",
+              "Αριστερή κοιλία"
+            ],
+            "correctIndex": 0,
+            "chapterKey": "K3",
+            "sectionKey": "3.4"
+          },
+          {
+            "category": "Ενότητα 3.4: Το κυκλοφορικό σύστημα του ανθρώπου",
+            "prompt": "Οι βαλβίδες της καρδιάς χρησιμεύουν για:",
+            "options": [
+              "Να αυξάνουν την πίεση",
+              "Να εμποδίζουν την παλινδρόμηση του αίματος",
+              "Να καθαρίζουν το αίμα",
+              "Να παράγουν λευκά αιμοσφαίρια"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.4"
+          },
+          {
+            "category": "Ενότητα 3.4: Το κυκλοφορικό σύστημα του ανθρώπου",
+            "prompt": "Τα κύτταρα που μεταφέρουν το οξυγόνο είναι:",
+            "options": [
+              "Τα λευκά αιμοσφαίρια",
+              "Τα ερυθρά αιμοσφαίρια",
+              "Τα αιμοπετάλια",
+              "Τα αντισώματα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.4"
+          },
+          {
+            "category": "Ενότητα 3.4: Το κυκλοφορικό σύστημα του ανθρώπου",
+            "prompt": "Η αιμοσφαιρίνη περιέχει:",
+            "options": [
+              "Μαγνήσιο",
+              "Σίδηρο",
+              "Ασβέστιο",
+              "Νάτριο"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.4"
+          },
+          {
+            "category": "Ενότητα 3.4: Το κυκλοφορικό σύστημα του ανθρώπου",
+            "prompt": "Τα αιμοπετάλια παίζουν ρόλο:",
+            "options": [
+              "Στην άμυνα του οργανισμού",
+              "Στη μεταφορά CO2",
+              "Στην πήξη του αίματος",
+              "Στη διατήρηση της θερμοκρασίας"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K3",
+            "sectionKey": "3.4"
+          },
+          {
+            "category": "Ενότητα 3.4: Το κυκλοφορικό σύστημα του ανθρώπου",
+            "prompt": "Ο \"καθαρισμός\" του αίματος από το CO2 γίνεται:",
+            "options": [
+              "Στο συκώτι",
+              "Στους πνεύμονες (μικρή κυκλοφορία)",
+              "Στα νεφρά",
+              "Στο σπλήνα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.4"
+          },
+          {
+            "category": "Ενότητα 3.4: Το κυκλοφορικό σύστημα του ανθρώπου",
+            "prompt": "Η μεγαλύτερη αρτηρία του σώματος είναι:",
+            "options": [
+              "Η πνευμονική",
+              "Η αορτή",
+              "Η καρωτίδα",
+              "Η μηριαία"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.4"
+          },
+          {
+            "category": "Ενότητα 3.4: Το κυκλοφορικό σύστημα του ανθρώπου",
+            "prompt": "Η πίεση του αίματος είναι μεγαλύτερη:",
+            "options": [
+              "Στις φλέβες",
+              "Στις αρτηρίες",
+              "Στα τριχοειδή",
+              "Στα λεμφαγγεία"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.4"
+          }
+        ]
+      },
+      "3.5": {
+        "title": "Ενότητα 3.5: Το ουροποιητικό σύστημα του ανθρώπου",
+        "short": "Ενότητα 3.5",
+        "questions": [
+          {
+            "category": "Ενότητα 3.5: Το ουροποιητικό σύστημα του ανθρώπου",
+            "prompt": "Η κύρια λειτουργία των νεφρών είναι:",
+            "options": [
+              "Η πέψη των πρωτεϊνών",
+              "Το φιλτράρισμα του αίματος και ο σχηματισμός ούρων",
+              "Η παραγωγή χολής",
+              "Η αναπνοή"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.5"
+          },
+          {
+            "category": "Ενότητα 3.5: Το ουροποιητικό σύστημα του ανθρώπου",
+            "prompt": "Η ουρία παράγεται στο:",
+            "options": [
+              "Νεφρό",
+              "Ήπαρ (από τη διάσπαση των πρωτεϊνών)",
+              "Στομάχι",
+              "Πάγκρεας"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.5"
+          },
+          {
+            "category": "Ενότητα 3.5: Το ουροποιητικό σύστημα του ανθρώπου",
+            "prompt": "Ο σωλήνας που μεταφέρει τα ούρα από το νεφρό στην ουροδόχο κύστη είναι:",
+            "options": [
+              "Η ουρήθρα",
+              "Ο ουρητήρας",
+              "Ο οισοφάγος",
+              "Η αορτή"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.5"
+          },
+          {
+            "category": "Ενότητα 3.5: Το ουροποιητικό σύστημα του ανθρώπου",
+            "prompt": "Η αποθήκευση των ούρων γίνεται:",
+            "options": [
+              "Στο νεφρό",
+              "Στην ουροδόχο κύστη",
+              "Στην ουρήθρα",
+              "Στο έντερο"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.5"
+          },
+          {
+            "category": "Ενότητα 3.5: Το ουροποιητικό σύστημα του ανθρώπου",
+            "prompt": "Η έξοδος των ούρων από το σώμα γίνεται μέσω:",
+            "options": [
+              "Του ουρητήρα",
+              "Της ουρήθρας",
+              "Του πρωκτού",
+              "Του δέρματος"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.5"
+          },
+          {
+            "category": "Ενότητα 3.5: Το ουροποιητικό σύστημα του ανθρώπου",
+            "prompt": "Η λειτουργική μονάδα του νεφρού είναι:",
+            "options": [
+              "Ο νευρώνας",
+              "Ο νεφρώνας",
+              "Το κύτταρο",
+              "Η λάχνη"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.5"
+          },
+          {
+            "category": "Ενότητα 3.5: Το ουροποιητικό σύστημα του ανθρώπου",
+            "prompt": "Αν τα ούρα περιέχουν γλυκόζη, αυτό μπορεί να είναι ένδειξη:",
+            "options": [
+              "Κρυολογήματος",
+              "Διαβήτη",
+              "Κούρασης",
+              "Πείνας"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.5"
+          },
+          {
+            "category": "Ενότητα 3.5: Το ουροποιητικό σύστημα του ανθρώπου",
+            "prompt": "Το δέρμα συμμετέχει στην αποβολή ουσιών μέσω:",
+            "options": [
+              "Των τριχών",
+              "Του ιδρώτα",
+              "Της μελανίνης",
+              "Της κερατίνης"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.5"
+          },
+          {
+            "category": "Ενότητα 3.5: Το ουροποιητικό σύστημα του ανθρώπου",
+            "prompt": "Ο ιδρώτας περιέχει:",
+            "options": [
+              "Μόνο νερό",
+              "Νερό, άλατα και μικρή ποσότητα ουρίας",
+              "Μόνο λίπη",
+              "Αίμα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.5"
+          },
+          {
+            "category": "Ενότητα 3.5: Το ουροποιητικό σύστημα του ανθρώπου",
+            "prompt": "Πόσους νεφρούς έχει συνήθως ο άνθρωπος;",
+            "options": [
+              "Έναν",
+              "Δύο",
+              "Τρεις",
+              "Τέσσερις"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K3",
+            "sectionKey": "3.5"
+          }
+        ]
+      }
+    }
+  },
+  "K4": {
+    "title": "Κεφάλαιο 4: Αναπνοή",
+    "short": "Κεφάλαιο 4",
+    "sections": {
+      "4.1": {
+        "title": "Ενότητα 4.1: Στους μονοκύτταρους οργανισμούς",
+        "short": "Ενότητα 4.1",
+        "questions": [
+          {
+            "category": "Ενότητα 4.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Η αναπνοή στους μονοκύτταρους οργανισμούς (ανταλλαγή αερίων) γίνεται μέσω:",
+            "options": [
+              "Των πνευμόνων",
+              "Της πλασματικής μεμβράνης",
+              "Του πυρήνα",
+              "Του ριβοσώματος"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.1"
+          },
+          {
+            "category": "Ενότητα 4.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Το αέριο που εισέρχεται για την αναπνοή είναι:",
+            "options": [
+              "Το διοξείδιο του άνθρακα",
+              "Το οξυγόνο",
+              "Το άζωτο",
+              "Το υδρογόνο"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.1"
+          },
+          {
+            "category": "Ενότητα 4.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Η ανταλλαγή των αερίων γίνεται με τη διαδικασία της:",
+            "options": [
+              "Φωτοσύνθεσης",
+              "Διάχυσης",
+              "Πέψης",
+              "Διαίρεσης"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.1"
+          },
+          {
+            "category": "Ενότητα 4.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Η κυτταρική αναπνοή αποσκοπεί στην:",
+            "options": [
+              "Παραγωγή νερού",
+              "Απελευθέρωση ενέργειας",
+              "Δημιουργία DNA",
+              "Κίνηση των ψευδοποδίων"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.1"
+          },
+          {
+            "category": "Ενότητα 4.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Το CO2 που παράγεται κατά την αναπνοή:",
+            "options": [
+              "Αποθηκεύεται στον πυρήνα",
+              "Εξέρχεται από το κύτταρο στο περιβάλλον",
+              "Μετατρέπεται σε ζάχαρη",
+              "Γίνεται πρωτεΐνη"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.1"
+          },
+          {
+            "category": "Ενότητα 4.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Σε ποιο οργανίδιο γίνεται η κυτταρική αναπνοή;",
+            "options": [
+              "Στους χλωροπλάστες",
+              "Στα μιτοχόνδρια",
+              "Στα λυσοσώματα",
+              "Στον πυρήνα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.1"
+          },
+          {
+            "category": "Ενότητα 4.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Οι μονοκύτταροι οργανισμοί αναπνέουν:",
+            "options": [
+              "Μόνο τη νύχτα",
+              "Συνεχώς (όλο το 24ωρο)",
+              "Μόνο όταν κινούνται",
+              "Μόνο όταν τρέφονται"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.1"
+          },
+          {
+            "category": "Ενότητα 4.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Η αμοιβάδα ζει στο νερό, άρα προσλαμβάνει:",
+            "options": [
+              "Αέριο οξυγόνο από την ατμόσφαιρα",
+              "Διαλυμένο οξυγόνο από το νερό",
+              "Οξυγόνο από την τροφή της",
+              "Δεν χρειάζεται οξυγόνο"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.1"
+          },
+          {
+            "category": "Ενότητα 4.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Η αναπνοή είναι:",
+            "options": [
+              "Μόνο η είσοδος αέρα",
+              "Μια σειρά χημικών αντιδράσεων για παραγωγή ενέργειας",
+              "Η αποβολή νερού",
+              "Η κίνηση του κυττάρου"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.1"
+          },
+          {
+            "category": "Ενότητα 4.1: Στους μονοκύτταρους οργανισμούς",
+            "prompt": "Η συγκέντρωση του οξυγόνου στο εσωτερικό του κυττάρου είναι συνήθως:",
+            "options": [
+              "Υψηλότερη από το περιβάλλον",
+              "Χαμηλότερη από το περιβάλλον (λόγω κατανάλωσης)",
+              "Ίση με το περιβάλλον",
+              "Μηδενική"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.1"
+          }
+        ]
+      },
+      "4.2": {
+        "title": "Ενότητα 4.2: Στα φυτά",
+        "short": "Ενότητα 4.2",
+        "questions": [
+          {
+            "category": "Ενότητα 4.2: Στα φυτά",
+            "prompt": "Τα φυτά αναπνέουν:",
+            "options": [
+              "Μόνο τη νύχτα",
+              "Μόνο τη μέρα",
+              "Όλο το 24ωρο",
+              "Μόνο όταν βρέχει"
+            ],
+            "correctIndex": 2,
+            "chapterKey": "K4",
+            "sectionKey": "4.2"
+          },
+          {
+            "category": "Ενότητα 4.2: Στα φυτά",
+            "prompt": "Κατά την αναπνοή, τα φυτά:",
+            "options": [
+              "Παίρνουν CO2 και δίνουν O2",
+              "Παίρνουν O2 και δίνουν CO2",
+              "Παίρνουν μόνο άζωτο",
+              "Παίρνουν νερό"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.2"
+          },
+          {
+            "category": "Ενότητα 4.2: Στα φυτά",
+            "prompt": "Η ανταλλαγή των αερίων στα φυτά γίνεται κυρίως από:",
+            "options": [
+              "Τις ρίζες",
+              "Τα στόματα των φύλλων",
+              "Τα άνθη",
+              "Το ξύλωμα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.2"
+          },
+          {
+            "category": "Ενότητα 4.2: Στα φυτά",
+            "prompt": "Η κυτταρική αναπνοή στα φυτά γίνεται:",
+            "options": [
+              "Μόνο στα πράσινα μέρη",
+              "Σε όλα τα ζωντανά κύτταρα (ρίζες, βλαστό, φύλλα)",
+              "Μόνο στους χλωροπλάστες",
+              "Μόνο στους καρπούς"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.2"
+          },
+          {
+            "category": "Ενότητα 4.2: Στα φυτά",
+            "prompt": "Το βράδυ στα φυτά κυριαρχεί:",
+            "options": [
+              "Η φωτοσύνθεση",
+              "Η αναπνοή (αφού δεν υπάρχει φως)",
+              "Η διαπνοή",
+              "Η παραγωγή αμύλου"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.2"
+          },
+          {
+            "category": "Ενότητα 4.2: Στα φυτά",
+            "prompt": "Οι φακίδες είναι:",
+            "options": [
+              "Ασθένεια των φύλλων",
+              "Μικρά ανοίγματα στον φλοιό του βλαστού για αναπνοή",
+              "Είδη ριζών",
+              "Τμήματα του άνθους"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.2"
+          },
+          {
+            "category": "Ενότητα 4.2: Στα φυτά",
+            "prompt": "Γιατί δεν πρέπει να έχουμε πολλά φυτά στο υπνοδωμάτιο τη νύχτα;",
+            "options": [
+              "Γιατί παράγουν πολύ οξυγόνο",
+              "Γιατί καταναλώνουν οξυγόνο και αποβάλλουν CO2",
+              "Γιατί μαραίνονται",
+              "Γιατί μυρίζουν έντονα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.2"
+          },
+          {
+            "category": "Ενότητα 4.2: Στα φυτά",
+            "prompt": "Η ενέργεια που απελευθερώνεται με την αναπνοή χρησιμοποιείται για:",
+            "options": [
+              "Την ανάπτυξη και τις λειτουργίες του φυτού",
+              "Να γίνει το φυτό πράσινο",
+              "Να προσελκύσει έντομα",
+              "Να παράγει χώμα"
+            ],
+            "correctIndex": 0,
+            "chapterKey": "K4",
+            "sectionKey": "4.2"
+          },
+          {
+            "category": "Ενότητα 4.2: Στα φυτά",
+            "prompt": "Σε ποια διαδικασία το φυτό παράγει οξυγόνο;",
+            "options": [
+              "Στην αναπνοή",
+              "Στη φωτοσύνθεση",
+              "Στη διαπνοή",
+              "Στην απορρόφηση νερού"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.2"
+          },
+          {
+            "category": "Ενότητα 4.2: Στα φυτά",
+            "prompt": "Η αναπνοή είναι η \"αντίστροφη\" διαδικασία της:",
+            "options": [
+              "Πέψης",
+              "Φωτοσύνθεσης",
+              "Διαπνοής",
+              "Μεταφοράς"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.2"
+          }
+        ]
+      },
+      "4.3": {
+        "title": "Ενότητα 4.3: Στους ζωικούς οργανισμούς",
+        "short": "Ενότητα 4.3",
+        "questions": [
+          {
+            "category": "Ενότητα 4.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Τα ψάρια αναπνέουν με:",
+            "options": [
+              "Πνεύμονες",
+              "Βράγχια",
+              "Τραχείες",
+              "Το δέρμα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.3"
+          },
+          {
+            "category": "Ενότητα 4.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Τα έντομα έχουν ένα σύστημα σωλήνων για αναπνοή που λέγονται:",
+            "options": [
+              "Φλέβες",
+              "Τραχείες",
+              "Βρόγχοι",
+              "Νεφρίδια"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.3"
+          },
+          {
+            "category": "Ενότητα 4.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Ο γαιοσκώληκας αναπνέει:",
+            "options": [
+              "Με πνεύμονες",
+              "Μέσω του υγρού δέρματός του",
+              "Με βράγχια",
+              "Με το στόμα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.3"
+          },
+          {
+            "category": "Ενότητα 4.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Τα θηλαστικά της θάλασσας (π.χ. δελφίνι) αναπνέουν με:",
+            "options": [
+              "Βράγχια",
+              "Πνεύμονες",
+              "Πτερύγια",
+              "Τραχείες"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.3"
+          },
+          {
+            "category": "Ενότητα 4.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Στα βράγχια, το οξυγόνο προσλαμβάνεται από:",
+            "options": [
+              "Τον αέρα",
+              "Το νερό που διέρχεται από αυτά",
+              "Την άμμο",
+              "Τα λέπια"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.3"
+          },
+          {
+            "category": "Ενότητα 4.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Ποια ζώα κάνουν δερματική αναπνοή (εκτός από την πνευμονική);",
+            "options": [
+              "Τα πουλιά",
+              "Τα αμφίβια (π.χ. βάτραχος)",
+              "Τα ερπετά",
+              "Οι σκύλοι"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.3"
+          },
+          {
+            "category": "Ενότητα 4.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Οι τραχείες των εντόμων καταλήγουν:",
+            "options": [
+              "Στην καρδιά",
+              "Απευθείας σε όλα τα κύτταρα του σώματος",
+              "Στο στομάχι",
+              "Στα φτερά"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.3"
+          },
+          {
+            "category": "Ενότητα 4.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Στα πουλιά, η αναπνοή υποβοηθείται από:",
+            "options": [
+              "Τους αεροφόρους σάκους",
+              "Τα λέπια",
+              "Την αιμολέμφο",
+              "Το ράμφος"
+            ],
+            "correctIndex": 0,
+            "chapterKey": "K4",
+            "sectionKey": "4.3"
+          },
+          {
+            "category": "Ενότητα 4.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Το οξυγόνο μεταφέρεται στα κύτταρα των σπονδυλωτών μέσω:",
+            "options": [
+              "Του πεπτικού",
+              "Του κυκλοφορικού συστήματος",
+              "Του νευρικού συστήματος",
+              "Των οστών"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.3"
+          },
+          {
+            "category": "Ενότητα 4.3: Στους ζωικούς οργανισμούς",
+            "prompt": "Η ανταλλαγή αερίων στους πνεύμονες γίνεται:",
+            "options": [
+              "Στις αρτηρίες",
+              "Στις κυψελίδες",
+              "Στην τραχεία",
+              "Στον οισοφάγο"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.3"
+          }
+        ]
+      },
+      "4.4": {
+        "title": "Ενότητα 4.4: Το αναπνευστικό σύστημα του ανθρώπου",
+        "short": "Ενότητα 4.4",
+        "questions": [
+          {
+            "category": "Ενότητα 4.4: Το αναπνευστικό σύστημα του ανθρώπου",
+            "prompt": "Η είσοδος του αέρα στον άνθρωπο ξεκινά από:",
+            "options": [
+              "Το στόμα και τη ρινική κοιλότητα",
+              "Τον οισοφάγο",
+              "Τους πνεύμονες",
+              "Το διάφραγμα"
+            ],
+            "correctIndex": 0,
+            "chapterKey": "K4",
+            "sectionKey": "4.4"
+          },
+          {
+            "category": "Ενότητα 4.4: Το αναπνευστικό σύστημα του ανθρώπου",
+            "prompt": "Ο σωλήνας που ακολουθεί μετά τον λάρυγγα ονομάζεται:",
+            "options": [
+              "Φάρυγγας",
+              "Τραχεία",
+              "Οισοφάγος",
+              "Αορτή"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.4"
+          },
+          {
+            "category": "Ενότητα 4.4: Το αναπνευστικό σύστημα του ανθρώπου",
+            "prompt": "Οι φωνητικές χορδές βρίσκονται στον:",
+            "options": [
+              "Φάρυγγα",
+              "Λάρυγγα",
+              "Πνεύμονα",
+              "Στόμα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.4"
+          },
+          {
+            "category": "Ενότητα 4.4: Το αναπνευστικό σύστημα του ανθρώπου",
+            "prompt": "Η τραχεία διακλαδίζεται σε δύο:",
+            "options": [
+              "Αρτηρίες",
+              "Βρόγχους",
+              "Ουρητήρες",
+              "Φλέβες"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.4"
+          },
+          {
+            "category": "Ενότητα 4.4: Το αναπνευστικό σύστημα του ανθρώπου",
+            "prompt": "Η ανταλλαγή του O2 και του CO2 γίνεται στις:",
+            "options": [
+              "Βρογχίδες",
+              "Πνευμονικές κυψελίδες",
+              "Πλευρές",
+              "Καρδιά"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.4"
+          },
+          {
+            "category": "Ενότητα 4.4: Το αναπνευστικό σύστημα του ανθρώπου",
+            "prompt": "Ο μυς που χωρίζει τη θωρακική από την κοιλιακή κοιλότητα και βοηθά στην αναπνοή είναι:",
+            "options": [
+              "Ο δικέφαλος",
+              "Το διάφραγμα",
+              "Ο καρδιακός μυς",
+              "Ο δελτοειδής"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.4"
+          },
+          {
+            "category": "Ενότητα 4.4: Το αναπνευστικό σύστημα του ανθρώπου",
+            "prompt": "Κατά την εισπνοή, ο θώρακας:",
+            "options": [
+              "Μικραίνει",
+              "Διευρύνεται (μεγαλώνει)",
+              "Μένει ίδιος",
+              "Ανεβαίνει προς τον λαιμό"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.4"
+          },
+          {
+            "category": "Ενότητα 4.4: Το αναπνευστικό σύστημα του ανθρώπου",
+            "prompt": "Τι συμβαίνει στις κυψελίδες;",
+            "options": [
+              "Το αίμα παίρνει CO2",
+              "Το αίμα αποβάλλει CO2 και παίρνει O2",
+              "Παράγεται βλέννα",
+              "Καίγεται η γλυκόζη"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.4"
+          },
+          {
+            "category": "Ενότητα 4.4: Το αναπνευστικό σύστημα του ανθρώπου",
+            "prompt": "Ο αέρας που εκπνέουμε περιέχει περισσότερο:",
+            "options": [
+              "Οξυγόνο από τον εισπνεόμενο",
+              "Διοξείδιο του άνθρακα από τον εισπνεόμενο",
+              "Άζωτο",
+              "Υδρογόνο"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.4"
+          },
+          {
+            "category": "Ενότητα 4.4: Το αναπνευστικό σύστημα του ανθρώπου",
+            "prompt": "Η βλέννα και τα βλεφαρίδια στη μύτη και την τραχεία χρησιμεύουν:",
+            "options": [
+              "Για να μυρίζουμε",
+              "Για να συγκρατούν τη σκόνη και τα μικρόβια",
+              "Για να παράγουν φωνή",
+              "Για να δροσίζουν τον αέρα"
+            ],
+            "correctIndex": 1,
+            "chapterKey": "K4",
+            "sectionKey": "4.4"
+          }
+        ]
+      }
+    }
+  }
+};
+
+    const gameQuestions = [];
+    let currentIndex = 0;
+    let activePlayer = 1;
+    let p1Score = 0;
+    let p2Score = 0;
+    let currentQuestion = null;
+    let locked = false;
+    let gameStarted = false;
+
+    const modeSelect = document.getElementById("modeSelect");
+    const chapterSelect = document.getElementById("chapterSelect");
+    const questionCountSelect = document.getElementById("questionCount");
+    const avatar1Select = document.getElementById("avatar1");
+    const avatar2Select = document.getElementById("avatar2");
+
+    const p1ScoreEl = document.getElementById("p1Score");
+    const p2ScoreEl = document.getElementById("p2Score");
+    const phaseLabelEl = document.getElementById("phaseLabel");
+    const roundInfoEl = document.getElementById("roundInfo");
+    const selectionInfoEl = document.getElementById("selectionInfo");
+    const turnTextEl = document.getElementById("turnText");
+    const categoryLabelEl = document.getElementById("categoryLabel");
+    const questionEl = document.getElementById("question");
+    const answersEl = document.getElementById("answers");
+    const messageEl = document.getElementById("message");
+    const ballEl = document.getElementById("ball");
+    const player1Card = document.getElementById("player1Card");
+    const player2Card = document.getElementById("player2Card");
+    const player1AvatarDisplay = document.getElementById("player1AvatarDisplay");
+    const player2AvatarDisplay = document.getElementById("player2AvatarDisplay");
+
+    const countdownOverlay = document.getElementById("countdownOverlay");
+    const countdownNumber = document.getElementById("countdownNumber");
+    const confettiLayer = document.getElementById("confettiLayer");
+
+    modeSelect.addEventListener("change", updateSelectionOptions);
+    avatar1Select.addEventListener("change", syncAvatars);
+    avatar2Select.addEventListener("change", syncAvatars);
+    window.addEventListener("resize", applyAutoFitScaling);
+
+    updateSelectionOptions();
+    syncAvatars();
+    renderIdleState();
+    applyAutoFitScaling();
+
+    function getAllQuestions() {
+      return Object.values(chapterData).flatMap(ch => Object.values(ch.sections).flatMap(sec => sec.questions));
+    }
+
+    function getChapterQuestions(chapterKey) {
+      const chapter = chapterData[chapterKey];
+      return chapter ? Object.values(chapter.sections).flatMap(sec => sec.questions) : [];
+    }
+
+    function getSectionQuestions(sectionKey) {
+      for (const chapter of Object.values(chapterData)) {
+        if (chapter.sections[sectionKey]) return chapter.sections[sectionKey].questions;
+      }
+      return [];
+    }
+
+    function updateSelectionOptions() {
+      const mode = modeSelect.value;
+      chapterSelect.innerHTML = "";
+
+      if (mode === "chapter") {
+        Object.entries(chapterData).forEach(([key, chapter]) => {
+          const option = document.createElement("option");
+          option.value = key;
+          option.textContent = chapter.title;
+          chapterSelect.appendChild(option);
+        });
+        chapterSelect.disabled = false;
+        chapterSelect.style.opacity = "1";
+      } else if (mode === "section") {
+        Object.values(chapterData).forEach(chapter => {
+          Object.entries(chapter.sections).forEach(([sectionKey, section]) => {
+            const option = document.createElement("option");
+            option.value = sectionKey;
+            option.textContent = `${chapter.short} • ${section.title}`;
+            chapterSelect.appendChild(option);
+          });
+        });
+        chapterSelect.disabled = false;
+        chapterSelect.style.opacity = "1";
+      } else {
+        const option = document.createElement("option");
+        option.value = "all";
+        option.textContent = "Όλη η ύλη (Κεφάλαια 1-4)";
+        chapterSelect.appendChild(option);
+        chapterSelect.disabled = true;
+        chapterSelect.style.opacity = "0.55";
+      }
+    }
+
+    function syncAvatars() {
+      player1AvatarDisplay.textContent = avatar1Select.value;
+      player2AvatarDisplay.textContent = avatar2Select.value;
+    }
+
+    function renderIdleState() {
+      gameStarted = false;
+      phaseLabelEl.textContent = "Αναμονή έναρξης";
+      roundInfoEl.textContent = "Γύρος 0 / 0";
+      turnTextEl.textContent = "Πάτησε «Έναρξη / Νέο Παιχνίδι» για να ξεκινήσει ο αγώνας.";
+      categoryLabelEl.textContent = "Κατηγορία: -";
+      questionEl.textContent = "Ο χώρος ερωτήσεων θα ενεργοποιηθεί μόλις επιλεγεί κατηγορία και πατηθεί η έναρξη.";
+      questionEl.classList.add("idle");
+      answersEl.innerHTML = "";
+      answersEl.classList.add("idle");
+      messageEl.textContent = "";
+      ballEl.style.left = "50%";
+      player1Card.classList.remove("active-turn", "winner-glow");
+      player2Card.classList.remove("active-turn", "winner-glow");
+    }
+
+    function applyAutoFitScaling() {
+      if (window.innerWidth <= 820) {
+        document.documentElement.style.setProperty("--game-scale", "1");
+        return;
+      }
+
+      const viewportW = window.innerWidth - 12;
+      const viewportH = window.innerHeight - 12;
+      const designW = 1320;
+      const designH = 780;
+
+      const scaleX = viewportW / designW;
+      const scaleY = viewportH / designH;
+      const scale = Math.min(scaleX, scaleY, 1);
+
+      document.documentElement.style.setProperty("--game-scale", String(scale));
+    }
+
+    function shuffle(array) {
+      const arr = [...array];
+      for (let i = arr.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [arr[i], arr[j]] = [arr[j], arr[i]];
+      }
+      return arr;
+    }
+
+    function buildQuestionSet() {
+      const mode = modeSelect.value;
+      const count = parseInt(questionCountSelect.value, 10);
+      let source = [];
+      let label = "";
+
+      if (mode === "all") {
+        label = "Τυχαίες ερωτήσεις από όλη την ύλη Βιολογίας (Κεφάλαια 1-4)";
+        source = getAllQuestions();
+      } else if (mode === "chapter") {
+        const ch = chapterSelect.value;
+        label = chapterData[ch]?.title || "Συγκεκριμένο κεφάλαιο";
+        source = getChapterQuestions(ch);
+      } else {
+        const sectionKey = chapterSelect.value;
+        let sectionTitle = "Συγκεκριμένη υποενότητα";
+        for (const chapter of Object.values(chapterData)) {
+          if (chapter.sections[sectionKey]) {
+            sectionTitle = `${chapter.short} • ${chapter.sections[sectionKey].title}`;
+            break;
+          }
+        }
+        label = sectionTitle;
+        source = getSectionQuestions(sectionKey);
+      }
+
+      selectionInfoEl.textContent = label;
+
+      const shuffled = shuffle(source);
+      if (count <= shuffled.length) return shuffled.slice(0, count);
+
+      const out = [];
+      while (out.length < count) out.push(...shuffle(source));
+      return out.slice(0, count);
+    }
+
+    function playTone(freq, start, duration, gainAmount, type = "sine") {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return null;
+      if (!window.__audioCtx) window.__audioCtx = new AudioContextClass();
+
+      const ctx = window.__audioCtx;
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+
+      osc.type = type;
+      osc.frequency.value = freq;
+
+      gain.gain.setValueAtTime(0.0001, start);
+      gain.gain.exponentialRampToValueAtTime(gainAmount, start + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.0001, start + duration);
+
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      osc.start(start);
+      osc.stop(start + duration + 0.03);
+      return ctx;
+    }
+
+    function ensureAudioReady() {
+      const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+      if (!AudioContextClass) return null;
+      if (!window.__audioCtx) window.__audioCtx = new AudioContextClass();
+      if (window.__audioCtx.state === "suspended") {
+        window.__audioCtx.resume();
+      }
+      return window.__audioCtx;
+    }
+
+    function playStartSound() {
+      try {
+        const ctx = ensureAudioReady();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        playTone(523.25, now, 0.20, 0.22);
+        playTone(659.25, now + 0.12, 0.20, 0.24);
+        playTone(783.99, now + 0.24, 0.24, 0.28);
+      } catch (e) {}
+    }
+
+    function playCorrectSound() {
+      try {
+        const ctx = ensureAudioReady();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        playTone(587.33, now, 0.15, 0.22);
+        playTone(783.99, now + 0.08, 0.22, 0.28);
+      } catch (e) {}
+    }
+
+    function playWrongSound() {
+      try {
+        const ctx = ensureAudioReady();
+        if (!ctx) return;
+        const now = ctx.currentTime;
+        playTone(392.00, now, 0.22, 0.20, "triangle");
+        playTone(293.66, now + 0.09, 0.26, 0.22, "triangle");
+      } catch (e) {}
+    }
+
+    function startFromWelcome() {
+      syncAvatars();
+      ensureAudioReady();
+      document.getElementById("welcomeScreen").style.display = "none";
+      document.getElementById("gameScreen").style.display = "block";
+      renderIdleState();
+      applyAutoFitScaling();
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function startGame() {
+      syncAvatars();
+      ensureAudioReady();
+      renderIdleState();
+      startCountdownThenGame();
+    }
+
+    function startCountdownThenGame() {
+      countdownOverlay.style.display = "flex";
+      const steps = ["3", "2", "1", "Πάμε!"];
+      let idx = 0;
+
+      function showStep() {
+        countdownNumber.textContent = steps[idx];
+        countdownNumber.style.animation = "none";
+        void countdownNumber.offsetWidth;
+        countdownNumber.style.animation = "popIn 0.9s ease";
+
+        if (steps[idx] === "Πάμε!") {
+          playStartSound();
+        }
+
+        idx++;
+        if (idx < steps.length) {
+          setTimeout(showStep, 760);
+        } else {
+          setTimeout(() => {
+            countdownOverlay.style.display = "none";
+            beginActualGame();
+          }, 640);
+        }
+      }
+
+      showStep();
+    }
+
+    function beginActualGame() {
+      const builtSet = buildQuestionSet();
+      gameQuestions.length = 0;
+      gameQuestions.push(...builtSet);
+      currentIndex = 0;
+      activePlayer = 1;
+      p1Score = 0;
+      p2Score = 0;
+      locked = false;
+      gameStarted = true;
+      updateScores();
+      updateTurnUI();
+      nextQuestion();
+    }
+
+    function nextQuestion() {
+      if (currentIndex >= gameQuestions.length) {
+        endGame();
+        return;
+      }
+
+      currentQuestion = gameQuestions[currentIndex];
+      locked = false;
+      questionEl.textContent = currentQuestion.prompt;
+      questionEl.classList.remove("idle");
+      categoryLabelEl.textContent = `Κατηγορία: ${currentQuestion.category}`;
+      phaseLabelEl.textContent = currentQuestion.chapterKey && chapterData[currentQuestion.chapterKey]
+        ? chapterData[currentQuestion.chapterKey].title
+        : currentQuestion.category;
+      roundInfoEl.textContent = `Γύρος ${currentIndex + 1} / ${gameQuestions.length}`;
+      messageEl.textContent = "";
+      ballEl.style.left = "50%";
+
+      renderAnswers();
+      updateTurnUI();
+    }
+
+    function renderAnswers() {
+      answersEl.innerHTML = "";
+      answersEl.classList.remove("idle");
+      currentQuestion.options.forEach((option, idx) => {
+        const btn = document.createElement("button");
+        btn.className = "answerBtn";
+        btn.textContent = option;
+        btn.addEventListener("click", () => submitChoice(idx, btn));
+        answersEl.appendChild(btn);
+      });
+    }
+
+    function submitChoice(choiceIndex, clickedButton) {
+      if (locked || !gameStarted) return;
+      locked = true;
+
+      const buttons = [...document.querySelectorAll(".answerBtn")];
+      buttons.forEach(btn => btn.disabled = true);
+
+      const correctButton = buttons[currentQuestion.correctIndex];
+
+      if (choiceIndex === currentQuestion.correctIndex) {
+        clickedButton.classList.add("correct");
+        playCorrectSound();
+
+        if (activePlayer === 1) {
+          p1Score++;
+          ballEl.style.left = "22%";
+          messageEl.textContent = "Σωστό! Η Ομάδα 1 παίρνει πόντο.";
+        } else {
+          p2Score++;
+          ballEl.style.left = "78%";
+          messageEl.textContent = "Σωστό! Η Ομάδα 2 παίρνει πόντο.";
+        }
+      } else {
+        clickedButton.classList.add("wrong");
+        if (correctButton) correctButton.classList.add("correct");
+        playWrongSound();
+        messageEl.textContent = `Λάθος. Σωστή απάντηση: ${currentQuestion.options[currentQuestion.correctIndex]}`;
+      }
+
+      updateScores();
+
+      setTimeout(() => {
+        currentIndex++;
+        activePlayer = activePlayer === 1 ? 2 : 1;
+        nextQuestion();
+      }, 1250);
+    }
+
+    function updateScores() {
+      p1ScoreEl.textContent = p1Score;
+      p2ScoreEl.textContent = p2Score;
+    }
+
+    function updateTurnUI() {
+      player1Card.classList.remove("active-turn");
+      player2Card.classList.remove("active-turn");
+
+      if (!gameStarted) return;
+
+      if (activePlayer === 1) {
+        player1Card.classList.add("active-turn");
+        turnTextEl.textContent = `Σειρά της Παίκτριας/του Παίκτη - Ομάδας 1 ${avatar1Select.value}`;
+      } else {
+        player2Card.classList.add("active-turn");
+        turnTextEl.textContent = `Σειρά της Παίκτριας/του Παίκτη - Ομάδας 2 ${avatar2Select.value}`;
+      }
+    }
+
+    function launchConfetti() {
+      confettiLayer.innerHTML = "";
+      const colors = ["#ff4f87", "#6b5cff", "#08c4ff", "#ffbd3e", "#20b45b", "#ffffff"];
+      for (let i = 0; i < 90; i++) {
+        const piece = document.createElement("div");
+        piece.className = "confetti";
+        piece.style.left = `${Math.random() * 100}%`;
+        piece.style.background = colors[Math.floor(Math.random() * colors.length)];
+        piece.style.animationDuration = `${3 + Math.random() * 2}s`;
+        piece.style.animationDelay = `${Math.random() * 0.8}s`;
+        piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+        confettiLayer.appendChild(piece);
+      }
+      setTimeout(() => confettiLayer.innerHTML = "", 6000);
+    }
+
+    function endGame() {
+      answersEl.innerHTML = "";
+      answersEl.classList.add("idle");
+      categoryLabelEl.textContent = "Τέλος παιχνιδιού";
+      phaseLabelEl.textContent = "Ο αγώνας ολοκληρώθηκε";
+      roundInfoEl.textContent = "Τελικό σκορ";
+      turnTextEl.textContent = "Μπράβο και στις δύο ομάδες!";
+      gameStarted = false;
+
+      player1Card.classList.remove("active-turn");
+      player2Card.classList.remove("active-turn");
+
+      if (p1Score > p2Score) {
+        questionEl.textContent = `Νικήτρια: Ομάδα 1 ${avatar1Select.value}!`;
+        questionEl.classList.remove("idle");
+        player1Card.classList.add("winner-glow");
+        launchConfetti();
+      } else if (p2Score > p1Score) {
+        questionEl.textContent = `Νικήτρια: Ομάδα 2 ${avatar2Select.value}!`;
+        questionEl.classList.remove("idle");
+        player2Card.classList.add("winner-glow");
+        launchConfetti();
+      } else {
+        questionEl.textContent = "Ισοπαλία!";
+        questionEl.classList.remove("idle");
+        launchConfetti();
+      }
+
+      messageEl.textContent = `Τελικό σκορ: Ομάδα 1 = ${p1Score} | Ομάδα 2 = ${p2Score}`;
+      ballEl.style.left = "50%";
+    }
+  </script>
+
+</body>
+</html>
