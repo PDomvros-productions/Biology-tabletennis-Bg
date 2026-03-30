@@ -343,7 +343,7 @@
 
     .gameScaleWrap {
       width: 1320px;
-      height: 780px;
+      height: 860px;
       transform: scale(var(--game-scale));
       transform-origin: top center;
       will-change: transform;
@@ -351,11 +351,11 @@
 
     .wrap {
       width: 1320px;
-      height: 780px;
+      height: 860px;
       margin: 0 auto;
       display: grid;
-      grid-template-rows: auto auto 86px auto auto;
-      gap: 8px;
+      grid-template-rows: auto auto auto 86px minmax(0, 1fr) auto;
+      gap: 10px;
       overflow: hidden;
       align-content: start;
     }
@@ -588,10 +588,10 @@
       display: flex;
       flex-direction: column;
       gap: 10px;
-      min-height: unset;
-      height: auto;
-      overflow: hidden;
-      align-self: start;
+      min-height: 0;
+      height: 100%;
+      overflow: auto;
+      align-self: stretch;
     }
 
     .questionMeta {
@@ -703,9 +703,10 @@
 
     #gameScreen .globalFooter {
       color: #48507e;
-      padding-top: 4px;
+      padding-top: 2px;
       padding-bottom: 4px;
       font-size: 0.75rem;
+      line-height: 1.2;
     }
 
     .smallNote {
@@ -4483,6 +4484,15 @@
     const countdownNumber = document.getElementById("countdownNumber");
     const confettiLayer = document.getElementById("confettiLayer");
 
+    let gameQuestions = [];
+    let currentIndex = 0;
+    let currentQuestion = null;
+    let activePlayer = 1;
+    let p1Score = 0;
+    let p2Score = 0;
+    let locked = false;
+    let gameStarted = false;
+
     modeSelect.addEventListener("change", updateSelectionOptions);
     avatar1Select.addEventListener("change", syncAvatars);
     avatar2Select.addEventListener("change", syncAvatars);
@@ -4573,7 +4583,7 @@
       const viewportW = window.innerWidth - 12;
       const viewportH = window.innerHeight - 12;
       const designW = 1320;
-      const designH = 780;
+      const designH = 860;
 
       const scaleX = viewportW / designW;
       const scaleY = viewportH / designH;
